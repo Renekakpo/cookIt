@@ -23,7 +23,7 @@ Technologies Used
 Getting Started
 ------------------------------------------
 1. Clone the repository to your local machine:
-`git clone https://github.com/{YOUR_USERNAME}/CookIt.git`
+`git clone https://github.com/Renekakpo/CookIt.git`
 
 2. Open the project in Android Studio.
 3. Register for a free API key from the [Edamam Recipe API](https://developer.edamam.com/edamam-recipe-api) website.
