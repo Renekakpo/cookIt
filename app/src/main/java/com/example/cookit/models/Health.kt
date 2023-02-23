@@ -1,0 +1,45 @@
+package com.example.cookit.models
+
+data class HealthLabel(
+    val webLabel: String,
+    val apiParameter: String,
+    val definition: String
+)
+
+val mockHealthLabels = listOf(
+    HealthLabel("Alcohol-Cocktail", "alcohol-cocktail", "Describes an alcoholic cocktail"),
+    HealthLabel("Alcohol-Free", "alcohol-free", "No alcohol used or contained"),
+    HealthLabel("Celery-Free", "celery-free", "Does not contain celery or derivatives"),
+    HealthLabel("Crustcean-Free", "crustacean-free", "Does not contain crustaceans (shrimp, lobster etc.) or derivatives"),
+    HealthLabel("Dairy-Free", "dairy-free", "No dairy; no lactose"),
+    HealthLabel("DASH", "DASH", "Dietary Approaches to Stop Hypertension diet"),
+    HealthLabel("Egg-Free", "egg-free", "No eggs or products containing eggs"),
+    HealthLabel("Fish-Free", "fish-free", "No fish or fish derivatives"),
+    HealthLabel("FODMAP-Free", "fodmap-free", "Does not contain FODMAP foods"),
+    HealthLabel("Gluten-Free", "gluten-free", "No ingredients containing gluten"),
+    HealthLabel("Immuno-Supportive", "immuno-supportive", "Recipes which fit a science-based approach to eating to strengthen the immune system"),
+    HealthLabel("Keto-Friendly", "keto-friendly", "Maximum 7 grams of net carbs per serving"),
+    HealthLabel("Kidney-Friendly", "kidney-friendly", "Per serving – phosphorus less than 250 mg AND potassium less than 500 mg AND sodium less than 500 mg"),
+    HealthLabel("Kosher", "kosher", "Contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves"),
+    HealthLabel("Low Potassium", "low-potassium", "Less than 150mg per serving"),
+    HealthLabel("Low Sugar", "low-sugar", "No simple sugars – glucose, dextrose, galactose, fructose, sucrose, lactose, maltose"),
+    HealthLabel("Lupine-Free", "lupine-free", "Does not contain lupine or derivatives"),
+    HealthLabel("Mediterranean", "Mediterranean", "Mediterranean diet"),
+    HealthLabel("Mollusk-Free", "mollusk-free", "No mollusks"),
+    HealthLabel("Mustard-Free", "mustard-free", "Does not contain mustard or derivatives"),
+    HealthLabel("No oil added", "No-oil-added", "No oil added except to what is contained in the basic ingredients"),
+    HealthLabel("Paleo", "paleo", "Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils"),
+    HealthLabel("Peanut-Free", "peanut-free", "No peanuts or products containing peanuts"),
+    HealthLabel("Pescatarian", "pecatarian", "Does not contain meat or meat based products, can contain dairy and fish"),
+    HealthLabel("Pork-Free", "pork-free", "Does not contain pork or derivatives"),
+    HealthLabel("Red-Meat-Free", "red-meat-free", "Does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat."),
+    HealthLabel("Sesame-Free", "sesame-free", "Does not contain sesame seed or derivatives"),
+    HealthLabel("Shellfish-Free", "shellfish-free", "No shellfish or shellfish derivatives"),
+    HealthLabel("Soy-Free", "soy-free", "No soy or products containing soy"),
+    HealthLabel("Sugar-Conscious", "sugar-conscious", "Less than 4g of sugar per serving"),
+    HealthLabel("Sulfite-Free", "sulfite-free", "No Sulfites"),
+    HealthLabel("Tree-Nut-Free", "tree-nut-free", "No tree nuts or products containing tree nuts"),
+    HealthLabel("Vegan",	"vegan", "No meat, poultry, fish, dairy, eggs or honey"),
+    HealthLabel("Vegetarian",	"vegetarian", "No meat, poultry, or fish"),
+    HealthLabel("Wheat-Free",	"wheat-free", "No wheat, can have gluten though"),
+)
