@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">CookIt</string>
+    <string name="onboarding_welcome_page_title">Welcome to CookIt!</string>
+    <string name="onboarding_welcome_page_description">Discover new and delicious recipes every day.</string>
+    <string name="onboarding_search_page_title">Find Your Favorite Recipe</string>
+    <string name="onboarding_search_page_description">Search by ingredients or category to find the perfect recipe for any occasion.</string>
+    <string name="onboarding_favorites_page_title">Save Your Favorites</string>
+    <string name="onboarding_favorites_page_description">Create a collection of your favorite recipes to easily access them later.</string>
+    <string name="onboarding_cooking_page_title">Get Cooking!</string>
+    <string name="onboarding_cooking_page_description">Follow step-by-step instructions and enjoy your delicious homemade meal.</string>
+    <string name="skip_button_text">Skip</string>
+    <string name="next_button_text">Next</string>
+    <string name="get_started_button_text">Get Started</string>
+    <string name="registration_text">Registration</string>
+    <string name="login_text">Login</string>
+    <string name="email_text">Email</string>
+    <string name="email_field_placeholder">Enter your email address</string>
+    <string name="email_field_icon_description">Email Icon</string>
+    <string name="password_text">Password</string>
+    <string name="password_field_placeholder">Enter your password</string>
+    <string name="password_field_icon_description">Password Icon</string>
+    <string name="password_field_trailing_icon_description">Toggle password visibility</string>
+    <string name="confirm_password_text">Confirm Password</string>
+    <string name="confirm_password_field_placeholder">Enter your password again</string>
+    <string name="confirm_password_field_icon_description">Password Icon</string>
+    <string name="confirm_password_field_trailing_icon_description">Toggle password visibility</string>
+    <string name="register_text">Register</string>
+    <string name="login_option_text">Already have an account? Login</string>
+    <string name="register_option_text">Don\'t have an account? Register</string>
 </resources>

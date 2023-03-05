@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Teal700, // Primary color
+    primary = Teal400, // Primary color
     primaryVariant = Teal700, // Primary color variant
     secondary = Teal400, // Secondary color
     background = Color.Black, // Background color
-    surface = TealA200, // Surface color
+    surface = TealA700, // Surface color
     onPrimary = Color.White, // Text color on primary background in dark mode
     onSecondary = Color.White, // Text color on secondary background in dark mode
     onBackground = Color.White, // Text color on background in dark mode
@@ -20,8 +20,8 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Teal700, // Primary color
-    primaryVariant = Teal400, // Primary color variant
+    primary = Teal400, // Primary color
+    primaryVariant = Teal700, // Primary color variant
     secondary = Teal400, // Secondary color
     background = Color.White, // Background color
     surface = Teal700, // Surface color
