@@ -1,7 +1,7 @@
 CookIt
 ============================================
 
-CookIt is a recipe search app that helps users find and save their favorite recipes. The app uses the [Edamam Recipe API](https://developer.edamam.com/edamam-recipe-api) to search for recipes based on keywords, ingredients, and dietary restrictions. Users can also save recipes to their favorites list and view detailed nutrition information for each recipe.
+CookIt is a recipe search app that helps users find and save their favorite recipes. The app uses the [Spoonacular API](https://spoonacular.com/food-api) to search for recipes based on keywords, ingredients, and dietary restrictions. Users can also save recipes to their favorites list and view detailed nutrition information for each recipe.
 
 Features
 -------------------------------------------
@@ -26,7 +26,7 @@ Getting Started
 `git clone https://github.com/Renekakpo/CookIt.git`
 
 2. Open the project in Android Studio.
-3. Register for a free API key from the [Edamam Recipe API](https://developer.edamam.com/edamam-recipe-api) website.
+3. Register for a free API key from the [Spoonacular API](https://spoonacular.com/food-api) website.
 4. Replace the API key in the `gradle.properties` file:
 `COOKIT_API_KEY=YOUR_API_KEY_HERE`
 
