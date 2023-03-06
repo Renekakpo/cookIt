@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CookItTheme {
 //                CookItApp(navHostController = rememberNavController())
-                LoginRegistrationScreen()
+                SplashScreen()
             }
         }
     }

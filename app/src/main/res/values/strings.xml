@@ -11,8 +11,11 @@
     <string name="skip_button_text">Skip</string>
     <string name="next_button_text">Next</string>
     <string name="get_started_button_text">Get Started</string>
-    <string name="registration_text">Registration</string>
-    <string name="login_text">Login</string>
+    <string name="signup_text">Sign up</string>
+    <string name="signup_subtitle_text">Create an account so you can create a collection of your favorite recipes</string>
+    <string name="login_greeting_text">Welcome back!</string>
+    <string name="login_button_text">Log in</string>
+    <string name="login_subtitle_text">Sign in to your account</string>
     <string name="email_text">Email</string>
     <string name="email_field_placeholder">Enter your email address</string>
     <string name="email_field_icon_description">Email Icon</string>
@@ -24,7 +27,7 @@
     <string name="confirm_password_field_placeholder">Enter your password again</string>
     <string name="confirm_password_field_icon_description">Password Icon</string>
     <string name="confirm_password_field_trailing_icon_description">Toggle password visibility</string>
-    <string name="register_text">Register</string>
+    <string name="register_text">Sign up</string>
     <string name="login_option_text">Already have an account? Login</string>
     <string name="register_option_text">Don\'t have an account? Register</string>
 </resources>

@@ -18,7 +18,7 @@ import com.example.cookit.R
 @Composable
 fun SplashScreen() {
     Surface(
-        color = MaterialTheme.colors.primaryVariant,
+        color = MaterialTheme.colors.primary,
         modifier = Modifier.fillMaxSize()
     ) {
         Box(
@@ -27,8 +27,8 @@ fun SplashScreen() {
         ) {
             Text(
                 text = stringResource(id = R.string.app_name),
-                color = Color.White,
-                style = MaterialTheme.typography.h3,
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h1,
                 modifier = Modifier.padding(16.dp)
             )
         }

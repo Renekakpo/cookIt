@@ -12,7 +12,7 @@ private val DarkColorPalette = darkColors(
     primaryVariant = Teal700, // Primary color variant
     secondary = Teal400, // Secondary color
     background = Color.Black, // Background color
-    surface = TealA700, // Surface color
+    surface = Teal700, // Surface color
     onPrimary = Color.White, // Text color on primary background in dark mode
     onSecondary = Color.White, // Text color on secondary background in dark mode
     onBackground = Color.White, // Text color on background in dark mode
@@ -22,13 +22,13 @@ private val DarkColorPalette = darkColors(
 private val LightColorPalette = lightColors(
     primary = Teal400, // Primary color
     primaryVariant = Teal700, // Primary color variant
-    secondary = Teal400, // Secondary color
+    secondary = Teal70O400, // Secondary color
     background = Color.White, // Background color
-    surface = Teal700, // Surface color
+    surface = Teal50O400, // Surface color
     onPrimary = Color.White, // Text color on primary background in light mode
     onSecondary = Color.White, // Text color on secondary background in light mode
     onBackground = Color.Black, // Text color on background in light mode
-    onSurface = Color.White, // Text color on surface in light mode
+    onSurface = DarkTransparent, // Text color on surface in light mode
 )
 
 @Composable

@@ -1,8 +1,6 @@
 package com.example.cookit.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -19,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cookit.R
@@ -43,14 +41,46 @@ fun LoginRegistrationScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = if (isRegistration) stringResource(R.string.registration_text) else stringResource(
-                R.string.login_text
-            ),
-            style = MaterialTheme.typography.h3,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.secondary
-        )
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start
+            ) {
+                if (isRegistration) {
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = stringResource(R.string.signup_text),
+                        style = MaterialTheme.typography.h2,
+                        color = Color.DarkGray
+                    )
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = stringResource(R.string.signup_subtitle_text),
+                        style = MaterialTheme.typography.body1,
+                        color = Color.Gray
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = stringResource(R.string.login_greeting_text),
+                        style = MaterialTheme.typography.h1,
+                        color = Color.DarkGray
+                    )
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = stringResource(R.string.login_subtitle_text),
+                        style = MaterialTheme.typography.body1,
+                        color = Color.Gray
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -98,7 +128,7 @@ fun LoginRegistrationScreen() {
                     color = MaterialTheme.colors.secondary
                 )
             },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisibilityState) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
@@ -138,65 +168,63 @@ fun LoginRegistrationScreen() {
             shape = MaterialTheme.shapes.small
         )
 
-        if (isRegistration) {
-            AnimatedVisibility(
-                visible = isRegistration,
-                enter = slideInVertically(initialOffsetY = { -it }),
-                exit = slideOutVertically(targetOffsetY = { -it }),
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Spacer(modifier = Modifier.height(8.dp))
+        AnimatedVisibility(
+            visible = isRegistration,
+            enter = slideInHorizontally(initialOffsetX = { -it }),
+            exit = slideOutHorizontally(targetOffsetX = { -it }),
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = confirmPasswordState,
-                    singleLine = true,
-                    onValueChange = { confirmPasswordState = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.confirm_password_text),
-                            color = MaterialTheme.colors.primary
-                        )
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.confirm_password_field_placeholder),
-                            color = Color.LightGray
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_password),
-                            contentDescription = stringResource(R.string.confirm_password_field_icon_description),
-                            tint = MaterialTheme.colors.secondary
-                        )
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                confirmPasswordVisibilityState = !confirmPasswordVisibilityState
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (confirmPasswordVisibilityState) {
-                                    Icons.Rounded.Visibility
-                                } else {
-                                    Icons.Rounded.VisibilityOff
-                                },
-                                contentDescription = stringResource(R.string.confirm_password_field_trailing_icon_description),
-                                tint = MaterialTheme.colors.primary
-                            )
+            OutlinedTextField(
+                value = confirmPasswordState,
+                singleLine = true,
+                onValueChange = { confirmPasswordState = it },
+                label = {
+                    Text(
+                        text = stringResource(R.string.confirm_password_text),
+                        color = MaterialTheme.colors.primary
+                    )
+                },
+                visualTransformation = if (confirmPasswordVisibilityState) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.confirm_password_field_placeholder),
+                        color = Color.LightGray
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        painterResource(R.drawable.ic_password),
+                        contentDescription = stringResource(R.string.confirm_password_field_icon_description),
+                        tint = MaterialTheme.colors.secondary
+                    )
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            confirmPasswordVisibilityState = !confirmPasswordVisibilityState
                         }
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = Color.LightGray
-                    ),
-                    shape = MaterialTheme.shapes.small
-                )
-            }
+                    ) {
+                        Icon(
+                            imageVector = if (confirmPasswordVisibilityState) {
+                                Icons.Rounded.Visibility
+                            } else {
+                                Icons.Rounded.VisibilityOff
+                            },
+                            contentDescription = stringResource(R.string.confirm_password_field_trailing_icon_description),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondary,
+                    unfocusedBorderColor = Color.LightGray
+                ),
+                shape = MaterialTheme.shapes.small
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -206,11 +234,11 @@ fun LoginRegistrationScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(45.dp),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.medium
         ) {
             Text(
                 text = if (isRegistration) stringResource(R.string.register_text) else stringResource(
-                    id = R.string.login_text
+                    id = R.string.login_button_text
                 ),
                 color = MaterialTheme.colors.onSecondary
             )
