@@ -28,7 +28,7 @@ private val LightColorPalette = lightColors(
     onPrimary = Color.White, // Text color on primary background in light mode
     onSecondary = Color.White, // Text color on secondary background in light mode
     onBackground = Color.Black, // Text color on background in light mode
-    onSurface = DarkTransparent, // Text color on surface in light mode
+    onSurface = Color.White, // Text color on surface in light mode
 )
 
 @Composable

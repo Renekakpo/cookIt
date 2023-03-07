@@ -15,8 +15,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CookItTheme {
-//                CookItApp(navHostController = rememberNavController())
-                SplashScreen()
+                CookItApp(navHostController = rememberNavController())
+//                OnboardingScreen()
             }
         }
     }

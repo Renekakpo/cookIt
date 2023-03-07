@@ -30,4 +30,5 @@
     <string name="register_text">Sign up</string>
     <string name="login_option_text">Already have an account? Login</string>
     <string name="register_option_text">Don\'t have an account? Register</string>
+    <string name="user_profile_picture_description">User profile picture</string>
 </resources>

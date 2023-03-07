@@ -11,9 +11,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -86,12 +84,11 @@ fun OnboardingScreen() {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize(),
-//                colorFilter = ColorFilter.tint(Color.Gray, BlendMode.Darken),
                 contentScale = ContentScale.Crop
             )
             Box(modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colors.onSurface)) {}
+                .background(color = Color.Black.copy(alpha = 0.5f))) {}
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

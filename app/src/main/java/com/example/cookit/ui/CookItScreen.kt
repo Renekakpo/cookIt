@@ -1,16 +1,10 @@
 package com.example.cookit.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -80,7 +74,7 @@ fun CookItApp(modifier: Modifier = Modifier, navHostController: NavHostControlle
                         label = { Text(text = screen.label) },
                         selected = selected,
                         alwaysShowLabel = false,
-                        selectedContentColor = MaterialTheme.colors.secondary,
+                        selectedContentColor = MaterialTheme.colors.primaryVariant,
                         unselectedContentColor = Color.LightGray,
                         onClick = {
                             navHostController.navigate(screen.route) {
