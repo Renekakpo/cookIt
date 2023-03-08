@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,44 +25,42 @@ import com.example.cookit.models.Recipe
 @Composable
 fun RecipeList(recipes: List<Recipe>, onItemClicked: (Recipe) -> Unit) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        itemsIndexed(recipes) { index, recipe ->
-            RecipeCard(recipe = recipe, index = index, onItemClicked = onItemClicked)
+        itemsIndexed(recipes) { _, recipe ->
+            RecipeCard(
+                modifier = Modifier.width(180.dp),
+                recipe = recipe,
+                onItemClicked = onItemClicked
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RecipeCard(recipe: Recipe, index: Int = 0, onItemClicked: (Recipe) -> Unit) {
+fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
         elevation = 4.dp,
-        modifier = Modifier.width(180.dp),
+        modifier = modifier.background(color = Color.Transparent),
         onClick = { onItemClicked(recipe) }
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Transparent)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(recipe.url) // TODO: Recipe image url
+                    .data(recipe.url)
                     .crossfade(true)
                     .build(),
-                contentDescription = stringResource(R.string.user_profile_picture_description),
+                contentDescription = stringResource(R.string.recipe_image_description),
                 contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.onboarding_cooking),
+                error = painterResource(id = R.drawable.ic_broken_image),
                 placeholder = painterResource(id = R.drawable.loading_img),
                 modifier = Modifier.fillMaxWidth()
-            )
-
-            TextWithIcon(
-                modifier = Modifier
-                    .align(alignment = Alignment.TopEnd)
-                    .padding(5.dp),
-                text = "${recipe.rating}", // TODO: Recipe rating value
-                isTimeIcon = false
             )
 
             Column(
@@ -73,21 +70,32 @@ fun RecipeCard(recipe: Recipe, index: Int = 0, onItemClicked: (Recipe) -> Unit) 
                     .align(alignment = Alignment.BottomCenter)
             ) {
                 Text(
-                    text = "${recipe.name}", // TODO: Recipe name
+                    text = "${recipe.name}",
                     textAlign = TextAlign.Justify,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 5.dp, start = 5.dp)
+                        .padding(top = 5.dp, start = 5.dp, end = 5.dp)
                 )
 
-                TextWithIcon(
+                Row(
                     modifier = Modifier.padding(5.dp),
-                    text = "${recipe.cookingTime} min.", // TODO: Recipe cooking time
-                    isTimeIcon = true
-                )
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextWithLeftIcon(
+                        text = "${recipe.cookingTime} min.",
+                        isTimeIcon = true
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    TextWithLeftIcon(
+                        text = "${recipe.rating}",
+                        isTimeIcon = false
+                    )
+                }
             }
         }
     }

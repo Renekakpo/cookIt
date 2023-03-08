@@ -1,5 +1,7 @@
 package com.example.cookit.utils
 
+import android.content.Context
+import android.widget.Toast
 import java.time.LocalTime
 import java.util.*
 
@@ -16,12 +18,17 @@ fun getGreetingText(username: String): String {
 fun getFoodSuggestion(): String {
     val cal = Calendar.getInstance()
     return when (cal.get(Calendar.HOUR_OF_DAY)) {
-        in 0..10 -> "What would you like to have for breakfast today?"
-        in 11..14 -> "What would you like to have for lunch today?"
-        in 15..18 -> "What would you like to have for a snack today?"
-        else -> "What would you like to have for dinner today?"
+        in 0..10 -> "breakfast"
+        in 11..14 -> "lunch"
+        in 15..18 -> "a snack"
+        else -> "dinner"
     }
 }
+
+fun showMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
 
 
 

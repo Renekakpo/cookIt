@@ -15,11 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.cookit.ui.theme.CookItTheme
 
 @Composable
-fun TextWithIcon(
-    modifier: Modifier,
+fun TextWithLeftIcon(
+    modifier: Modifier = Modifier,
     text: String,
     isTimeIcon: Boolean
 ) {
@@ -33,12 +35,20 @@ fun TextWithIcon(
             tint = Color.White,
             modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(2.dp))
         Text(
             text = text,
             textAlign = TextAlign.Justify,
             style = MaterialTheme.typography.body1,
             color = MaterialTheme.colors.onPrimary
         )
+    }
+}
+
+@Preview
+@Composable
+fun TextWithLeftIconPreview() {
+    CookItTheme {
+        TextWithLeftIcon(modifier = Modifier, text = "4.5", isTimeIcon = false)
     }
 }

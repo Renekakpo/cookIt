@@ -31,4 +31,9 @@
     <string name="login_option_text">Already have an account? Login</string>
     <string name="register_option_text">Don\'t have an account? Register</string>
     <string name="user_profile_picture_description">User profile picture</string>
+    <string name="recipe_suggestion_text">What would you like to have for %1$s today?</string>
+    <string name="recipe_image_description">Recipe image</string>
+    <string name="search_icon_description">Search icon</string>
+    <string name="search_field_placeholder">Search</string>
+    <string name="filter_icon_description">Filter</string>
 </resources>
