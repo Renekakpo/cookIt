@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,11 +25,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cookit.R
-import com.example.cookit.models.mockCuisineTypes
 import com.example.cookit.models.recipeList
 import com.example.cookit.ui.common.RecipeCard
 import com.example.cookit.ui.common.RecipeList
-import com.example.cookit.ui.common.RoundedCuisineItemList
+import com.example.cookit.ui.common.RecipeFilterItems
 import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.getFoodSuggestion
 import com.example.cookit.utils.getGreetingText
@@ -38,7 +38,7 @@ import com.example.cookit.utils.showMessage
 fun HomeScreen() {
     val context = LocalContext.current
     val name = "Lorem"
-    val cuisines = mockCuisineTypes
+    val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
     var currentIndex by rememberSaveable { mutableStateOf(0) }
     var currentItem by rememberSaveable { mutableStateOf("") }
 
@@ -96,21 +96,23 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.height(15.dp))
 
         RecipeCard(
-            modifier = Modifier.fillMaxWidth().height(180.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
             recipe = recipeList.random(),
             onItemClicked = {
                 showMessage(
                     context = context,
-                    message = "Navigate to recipe ${it.name} details screen"
+                    message = "Navigate to recipe ${it.title} details screen"
                 )
             }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        RoundedCuisineItemList(
+        RecipeFilterItems(
             items = cuisines.map { item ->
-                item.value.replaceFirstChar { it.uppercase() }
+                item.replaceFirstChar { it.uppercase() }
             }.sorted(),
             selectedIndex = currentIndex,
             onItemSelected = { index, item ->
@@ -126,7 +128,7 @@ fun HomeScreen() {
             onItemClicked = {
                 showMessage(
                     context = context,
-                    message = "Navigate to recipe ${it.name} details screen"
+                    message = "Navigate to recipe ${it.title} details screen"
                 )
             }
         )

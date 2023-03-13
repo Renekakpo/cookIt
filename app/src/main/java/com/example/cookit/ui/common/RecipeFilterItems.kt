@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RoundedCuisineItemList(
+fun RecipeFilterItems(
     items: List<String>,
     selectedIndex: Int,
     onItemSelected: (Int, String) -> Unit
@@ -26,7 +26,7 @@ fun RoundedCuisineItemList(
 
     LazyRow(
         state = listState,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(items) { index, item ->
             val backgroundColor = if (index == selectedIndex)
@@ -43,7 +43,7 @@ fun RoundedCuisineItemList(
                 modifier = Modifier
                     .background(
                         color = backgroundColor,
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.small
                     )
                     .clickable {
                         onItemSelected(index, item)
@@ -51,7 +51,7 @@ fun RoundedCuisineItemList(
             ) {
                 Text(
                     text = item,
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp),
+                    modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
                     fontWeight = if (index == selectedIndex)
                         FontWeight.Bold
                     else

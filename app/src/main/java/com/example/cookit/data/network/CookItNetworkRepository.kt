@@ -1,6 +1,6 @@
 package com.example.cookit.data.network
 
-import com.example.cookit.models.network.RecipeSearchResult
+import com.example.cookit.models.RecipeSearchResult
 import com.example.cookit.models.network.SpecificRecipeInfo
 import com.example.cookit.network.CookItApiService
 

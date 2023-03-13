@@ -20,7 +20,7 @@ fun FavoriteScreen(modifier: Modifier = Modifier) {
     Column(modifier.fillMaxSize().padding(15.dp)) {
         VerticalGridList(
             items = recipeList,
-            onItemClicked = { showMessage(context, "Recipe clicked: ${it.name}") })
+            onItemClicked = { showMessage(context, "Recipe clicked: ${it.title}") })
     }
 }
 

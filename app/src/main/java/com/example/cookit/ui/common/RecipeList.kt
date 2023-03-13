@@ -53,7 +53,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Un
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(recipe.url)
+                    .data(recipe.image)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(R.string.recipe_image_description),
@@ -70,7 +70,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Un
                     .align(alignment = Alignment.BottomCenter)
             ) {
                 Text(
-                    text = "${recipe.name}",
+                    text = "${recipe.title}",
                     textAlign = TextAlign.Justify,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
@@ -85,14 +85,14 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Un
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextWithLeftIcon(
-                        text = "${recipe.cookingTime} min.",
+                        text = "${recipe.readyInMinutes} min.",
                         isTimeIcon = true
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
                     TextWithLeftIcon(
-                        text = "${recipe.rating}",
+                        text = "${recipe.spoonacularScore}",
                         isTimeIcon = false
                     )
                 }

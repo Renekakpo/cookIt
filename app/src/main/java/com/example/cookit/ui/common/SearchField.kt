@@ -86,9 +86,11 @@ fun SearchField(
                 focusManager.clearFocus(force = true)
             })
         )
+
         Spacer(modifier = Modifier.width(5.dp))
+
         IconButton(
-            onClick = onFilterClicked
+            onClick = { onFilterClicked() }
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_filter),

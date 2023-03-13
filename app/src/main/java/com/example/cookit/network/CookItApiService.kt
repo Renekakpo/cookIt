@@ -1,6 +1,6 @@
 package com.example.cookit.network
 
-import com.example.cookit.models.network.RecipeSearchResult
+import com.example.cookit.models.RecipeSearchResult
 import com.example.cookit.models.network.SpecificRecipeInfo
 import retrofit2.http.GET
 import retrofit2.http.Path
