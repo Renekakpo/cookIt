@@ -16,7 +16,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CookItTheme {
                 CookItApp(navHostController = rememberNavController())
-//                OnboardingScreen()
             }
         }
     }

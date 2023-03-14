@@ -12,6 +12,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -20,18 +21,21 @@ fun CuisineTypeFilter(
     selectedCuisineType: String,
     onCuisineTypeSelected: (String) -> Unit
 ) {
-    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)) {
         Text(
             text = "Cuisine Type",
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colors.onBackground
         )
 
         Spacer(Modifier.height(8.dp))
 
         LazyRow(
-            contentPadding = PaddingValues(end = 16.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(cuisineTypes) { cuisineType ->
                 val isSelected = cuisineType == selectedCuisineType
@@ -40,7 +44,6 @@ fun CuisineTypeFilter(
                     isSelected = isSelected,
                     onClick = { onCuisineTypeSelected(cuisineType) }
                 )
-                Spacer(Modifier.width(8.dp))
             }
         }
     }
@@ -53,20 +56,19 @@ fun CuisineTypeChip(
     onClick: () -> Unit
 ) {
     val colors = MaterialTheme.colors
-    val backgroundColor = if (isSelected) colors.primary else colors.onSurface.copy(alpha = 0.2f)
-    val contentColor = if (isSelected) colors.onPrimary else colors.onSurface
+    val backgroundColor = if (isSelected) colors.primary else colors.primary.copy(alpha = 0.3f)
+    val contentColor = if (isSelected) colors.onPrimary else Color.DarkGray.copy(alpha = 0.87f)
 
     Surface(
-        modifier = Modifier.clickable(onClick = onClick)
-            .padding(end = 8.dp),
+        modifier = Modifier.clickable(onClick = onClick),
         elevation = 0.dp,
         shape = MaterialTheme.shapes.small,
-        color = backgroundColor,
-        contentColor = contentColor
+        color = backgroundColor
     ) {
         Text(
             text = cuisineType,
-            style = MaterialTheme.typography.body2,
+            color = contentColor,
+            style = MaterialTheme.typography.subtitle2,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }

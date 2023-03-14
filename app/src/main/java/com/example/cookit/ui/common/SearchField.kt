@@ -59,7 +59,9 @@ fun SearchField(
             contentDescription = stringResource(R.string.search_icon_description),
             tint = Color.Gray
         )
+
         Spacer(modifier = Modifier.width(5.dp))
+
         TextField(
             value = query,
             onValueChange = onQueryChanged,
@@ -90,7 +92,11 @@ fun SearchField(
         Spacer(modifier = Modifier.width(5.dp))
 
         IconButton(
-            onClick = { onFilterClicked() }
+            onClick = {
+                keyboardController?.hide()
+                focusManager.clearFocus(force = true)
+                onFilterClicked()
+            }
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_filter),

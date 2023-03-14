@@ -1,7 +1,5 @@
 package com.example.cookit.ui.screens
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,12 +17,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.cookit.R
 import com.example.cookit.models.onboardingPages
+import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.theme.CookItTheme
 
+object OnboardingScreen: NavDestination {
+    override val route: String = "onboarding_screen"
+}
+
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(navController: NavController) {
     val context = LocalContext.current
 
     val onboardingPages = remember { onboardingPages }
@@ -39,7 +44,7 @@ fun OnboardingScreen() {
             ) {
                 if (currentPageIndex < onboardingPages.size - 1) {
                     TextButton(
-                        onClick = { navigateToNextScreen(context = context) },
+                        onClick = { navigateToNextScreen(navController = navController) },
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 5.dp)
                             .align(Alignment.CenterVertically)
@@ -61,7 +66,7 @@ fun OnboardingScreen() {
                     }
                 } else {
                     Button(
-                        onClick = { navigateToNextScreen(context = context) },
+                        onClick = { navigateToNextScreen(navController = navController) },
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -114,18 +119,14 @@ fun OnboardingScreen() {
     }
 }
 
-private fun navigateToNextScreen(context: Context) {
-    Toast.makeText(
-        context,
-        "Finish onboarding process",
-        Toast.LENGTH_SHORT
-    ).show()
+private fun navigateToNextScreen(navController: NavController) {
+    navController.navigate(route = LoginRegistrationScreen.route)
 }
 
 @Preview
 @Composable
 fun OnboardingPagePreview() {
     CookItTheme {
-        OnboardingScreen()
+        OnboardingScreen(navController = rememberNavController())
     }
 }

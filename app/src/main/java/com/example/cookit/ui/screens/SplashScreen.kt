@@ -7,16 +7,27 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cookit.R
+import com.example.cookit.navigation.NavDestination
+import com.example.cookit.ui.theme.CookItTheme
+import kotlinx.coroutines.delay
+
+object SplashScreen : NavDestination {
+    override val route: String = "splash_screen"
+}
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    navigateToAuthScreen: () -> Unit,
+    navigateToOnboardingScreen: () -> Unit,
+    navigationToBottomNavScreen: () -> Unit
+) {
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier.fillMaxSize()
@@ -33,10 +44,21 @@ fun SplashScreen() {
             )
         }
     }
+
+    LaunchedEffect(true) {
+        delay(5000)
+        navigateToOnboardingScreen()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen()
+    CookItTheme {
+        SplashScreen(
+            navigateToAuthScreen = {},
+            navigateToOnboardingScreen = {},
+            navigationToBottomNavScreen = {}
+        )
+    }
 }

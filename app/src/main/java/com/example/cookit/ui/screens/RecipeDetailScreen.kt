@@ -1,10 +1,13 @@
 package com.example.cookit.ui.screens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -23,7 +26,13 @@ import com.example.cookit.R
 import com.example.cookit.models.ExtendedIngredient
 import com.example.cookit.models.Recipe
 import com.example.cookit.models.recipe
+import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.theme.CookItTheme
+
+
+object RecipeDetailScreen: NavDestination {
+    override val route: String = "recipe_info"
+}
 
 @Composable
 fun RecipeDetailsScreen(
@@ -31,6 +40,7 @@ fun RecipeDetailsScreen(
     onBackClicked: () -> Unit,
     onLikeClicked: () -> Unit,
     onStartCookingClicked: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     Scaffold {
         Column(
@@ -191,7 +201,8 @@ fun RecipeDetailsScreenPreview() {
             recipe = recipe,
             onBackClicked = {},
             onLikeClicked = {},
-            onStartCookingClicked = {}
+            onStartCookingClicked = {},
+            navigateUp = {},
         )
     }
 }

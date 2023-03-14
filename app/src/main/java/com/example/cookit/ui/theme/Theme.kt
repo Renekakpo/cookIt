@@ -12,23 +12,25 @@ private val DarkColorPalette = darkColors(
     primaryVariant = Teal700, // Primary color variant
     secondary = Teal400, // Secondary color
     background = Color.Black, // Background color
-    surface = Teal700, // Surface color
+    surface = Teal400.copy(alpha = 0.5f), // Surface color
+
     onPrimary = Color.White, // Text color on primary background in dark mode
     onSecondary = Color.White, // Text color on secondary background in dark mode
     onBackground = Color.White, // Text color on background in dark mode
-    onSurface = Color.White, // Text color on surface in dark mode
+    onSurface = Teal400, // Text color on surface in dark mode
 )
 
 private val LightColorPalette = lightColors(
-    primary = Teal400, // Primary color
-    primaryVariant = Teal700, // Primary color variant
-    secondary = Teal70O400, // Secondary color
+    primary = Teal400, // Main color used to display components across the app
+    primaryVariant = Teal700, // Variant of the main color used for components such as topBar and statusBar
     background = Color.White, // Background color
-    surface = Teal50O400, // Surface color
-    onPrimary = Color.White, // Text color on primary background in light mode
-    onSecondary = Color.White, // Text color on secondary background in light mode
-    onBackground = Color.Black, // Text color on background in light mode
-    onSurface = Color.White, // Text color on surface in light mode
+    secondary = Teal70O700, // Color used by components such as floating button, checkbox, highlight items...
+    surface = Teal400,
+
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.Black,
+    onSurface = Color.White
 )
 
 @Composable

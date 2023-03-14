@@ -1,5 +1,6 @@
 package com.example.cookit.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -18,12 +19,14 @@ fun IntoleranceFilter(
     onIntoleranceSelected: (Set<String>) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
         Text(
             text = "Intolerances",
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colors.onBackground
         )
 
         LazyRow(
@@ -59,6 +62,7 @@ fun IntoleranceFilter(
                 ) {
                     Text(
                         text = intolerance,
+                        color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.subtitle2,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )

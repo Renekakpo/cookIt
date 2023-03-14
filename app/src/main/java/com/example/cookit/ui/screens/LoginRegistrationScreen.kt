@@ -22,11 +22,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.cookit.R
+import com.example.cookit.navigation.BottomNavGraph
+import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.theme.CookItTheme
 
+
+object LoginRegistrationScreen: NavDestination {
+    override val route: String = "authentication_screen"
+}
+
 @Composable
-fun LoginRegistrationScreen() {
+fun LoginRegistrationScreen(navController: NavController) {
     var emailState by rememberSaveable { mutableStateOf("") }
     var passwordState by rememberSaveable { mutableStateOf("") }
     var confirmPasswordState by rememberSaveable { mutableStateOf("") }
@@ -230,7 +239,7 @@ fun LoginRegistrationScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Handle login/registration here */ },
+            onClick = { navController.navigate(route = BottomNavGraph.route) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(45.dp),
@@ -264,6 +273,6 @@ fun LoginRegistrationScreen() {
 @Composable
 fun LoginRegistrationScreenPreview() {
     CookItTheme {
-        LoginRegistrationScreen()
+        LoginRegistrationScreen(navController = rememberNavController())
     }
 }

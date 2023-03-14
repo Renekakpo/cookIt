@@ -36,6 +36,8 @@
     <string name="search_icon_description">Search icon</string>
     <string name="search_field_placeholder">Search</string>
     <string name="filter_icon_description">Filter</string>
+    <string name="clear_all_filter_text">Clear All</string>
+    <string name="apply_filter_button_text">Apply Filter</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

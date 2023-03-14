@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -21,19 +22,19 @@ fun MealTypeFilter(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
         Text(
             text = "Meal Type",
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onBackground,
         )
 
         Spacer(Modifier.height(8.dp))
 
         LazyRow(
-            contentPadding = PaddingValues(end = 16.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(mealTypes.size) { index ->
                 val mealType = mealTypes[index]
@@ -56,14 +57,12 @@ fun MealTypeChip(
 ) {
     val colors = MaterialTheme.colors
     val chipBackgroundColor =
-        if (isSelected) colors.primary else colors.onSurface.copy(alpha = 0.12f)
+        if (isSelected) colors.primary else colors.primary.copy(alpha = 0.3f)
     val textColor =
-        if (isSelected) colors.onPrimary else colors.onSurface.copy(alpha = 0.87f)
+        if (isSelected) colors.onPrimary else Color.DarkGray.copy(alpha = 0.87f)
 
     Surface(
-        modifier = Modifier
-            .padding(end = 8.dp)
-            .clickable { onMealTypeSelected(mealType) },
+        modifier = Modifier.clickable { onMealTypeSelected(mealType) },
         elevation = 0.dp,
         shape = MaterialTheme.shapes.small,
         color = chipBackgroundColor

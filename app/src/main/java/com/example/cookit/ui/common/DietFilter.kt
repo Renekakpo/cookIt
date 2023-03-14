@@ -19,17 +19,19 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DietFilter(
     diets: List<String>,
-    selectedDiet: String?,
-    onDietSelected: (String?) -> Unit
+    selectedDiet: String,
+    onDietSelected: (String) -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowRight
 
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 10.dp)) {
         Text(
             text = "Diet",
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onBackground,
             modifier = Modifier.padding(vertical = 10.dp)
         )
 
@@ -41,12 +43,16 @@ fun DietFilter(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Diet",
-                color = MaterialTheme.colors.onPrimary,
+                text = selectedDiet.ifEmpty { "Diet" },
+                color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
-            Icon(imageVector = icon, contentDescription = "Expand/Collapse")
+            Icon(
+                imageVector = icon,
+                contentDescription = "Expand/Collapse",
+                tint = MaterialTheme.colors.primary
+            )
         }
         DropdownMenu(
             expanded = expanded,
@@ -56,7 +62,7 @@ fun DietFilter(
             diets.forEach { diet ->
                 DropdownMenuItem(
                     onClick = {
-                        onDietSelected(diet.takeIf { it != selectedDiet })
+                        onDietSelected("${diet.takeIf { it != selectedDiet }}")
                         expanded = false
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -65,7 +71,7 @@ fun DietFilter(
                         RadioButton(
                             selected = diet == selectedDiet,
                             onClick = {
-                                onDietSelected(diet.takeIf { it != selectedDiet })
+                                onDietSelected("${diet.takeIf { it != selectedDiet }}")
                                 expanded = false
                             }
                         )
