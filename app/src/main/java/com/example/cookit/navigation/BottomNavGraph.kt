@@ -17,17 +17,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.cookit.ui.screens.FavoriteScreen
 import com.example.cookit.ui.screens.HomeScreen
-import com.example.cookit.ui.screens.SearchScreen
 import com.example.cookit.ui.screens.SettingsScreen
+import com.example.cookit.ui.screens.favorite.FavoriteScreen
+import com.example.cookit.ui.screens.search.SearchScreen
 
 object BottomNavGraph : NavDestination {
     override val route: String = "bottom_nav"
 }
 
 @Composable
-fun CookItBottomNavHost(navHostController: NavHostController, modifier: Modifier = Modifier) {
+fun CookItBottomNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     val screens = listOf(
         BottomNavScreen.Home,
         BottomNavScreen.Search,
@@ -35,7 +35,7 @@ fun CookItBottomNavHost(navHostController: NavHostController, modifier: Modifier
         BottomNavScreen.Settings
     )
 
-    val currentRoute = homeNavHostCurrentRoute(navHostController)
+    val currentRoute = homeNavHostCurrentRoute(navController)
 
     Scaffold(
         bottomBar = {
@@ -68,8 +68,8 @@ fun CookItBottomNavHost(navHostController: NavHostController, modifier: Modifier
                         selectedContentColor = MaterialTheme.colors.primaryVariant,
                         unselectedContentColor = Color.LightGray,
                         onClick = {
-                            navHostController.navigate(screen.route) {
-                                popUpTo(navHostController.graph.startDestinationId) {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.startDestinationId) {
                                     saveState = currentRoute == screen.route
                                 }
                                 launchSingleTop = true
@@ -82,7 +82,7 @@ fun CookItBottomNavHost(navHostController: NavHostController, modifier: Modifier
         }
     ) { innerPadding ->
         NavHost(
-            navController = navHostController,
+            navController = navController,
             startDestination = BottomNavScreen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {

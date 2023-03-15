@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.favorite
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

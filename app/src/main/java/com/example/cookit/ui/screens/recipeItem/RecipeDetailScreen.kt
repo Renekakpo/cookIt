@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.recipeItem
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

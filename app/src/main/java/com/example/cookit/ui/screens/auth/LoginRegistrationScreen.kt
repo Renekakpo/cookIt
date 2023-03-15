@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.auth
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -22,20 +22,21 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.cookit.R
 import com.example.cookit.navigation.BottomNavGraph
 import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.theme.CookItTheme
-
+import com.example.cookit.utils.AppViewModelProvider
 
 object LoginRegistrationScreen: NavDestination {
     override val route: String = "authentication_screen"
 }
 
 @Composable
-fun LoginRegistrationScreen(navController: NavController) {
+fun LoginRegistrationScreen(navController: NavController, viewModel: LoginRegistrationViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     var emailState by rememberSaveable { mutableStateOf("") }
     var passwordState by rememberSaveable { mutableStateOf("") }
     var confirmPasswordState by rememberSaveable { mutableStateOf("") }
@@ -239,7 +240,7 @@ fun LoginRegistrationScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { navController.navigate(route = BottomNavGraph.route) },
+            onClick = { onAuthButtonClicked(navController = navController, viewModel = viewModel) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(45.dp),
@@ -267,6 +268,11 @@ fun LoginRegistrationScreen(navController: NavController) {
             )
         }
     }
+}
+
+private fun onAuthButtonClicked(navController: NavController, viewModel: LoginRegistrationViewModel) {
+    viewModel.saveLoginCompletionState(isCompleted = true)
+    navController.navigate(route = BottomNavGraph.route)
 }
 
 @Preview(showBackground = true)

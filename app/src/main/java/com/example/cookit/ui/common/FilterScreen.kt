@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -7,11 +7,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,37 +17,27 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cookit.R
-import com.example.cookit.ui.common.CuisineTypeFilter
-import com.example.cookit.ui.common.DietFilter
-import com.example.cookit.ui.common.IntoleranceFilter
-import com.example.cookit.ui.common.MealTypeFilter
+import com.example.cookit.ui.screens.search.SearchViewModel
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.showMessage
 
 @Composable
-fun FilterScreen(
-    onClearFilter: (Map<String, List<String?>>) -> Unit,
-    onApplyFilter: (Map<String, List<String?>>) -> Unit
-) {
+fun FilterScreen(searchViewModel: SearchViewModel) {
     val context = LocalContext.current
-    var cuisineType by rememberSaveable { mutableStateOf("") }
-    var mealType by rememberSaveable { mutableStateOf("") }
-    var diet by rememberSaveable { mutableStateOf("") }
-    var intolerancesList by rememberSaveable { mutableStateOf(listOf<String>()) }
-
-    val filters = mapOf(
-        "cuisineType" to listOf(cuisineType),
-        "mealType" to listOf(mealType),
-        "diet" to listOf(diet),
-        "intolerances" to intolerancesList
-    )
+    val filterUiState = searchViewModel.filterUiState.collectAsState().value
+    var cuisineType by rememberSaveable { mutableStateOf(filterUiState.cuisine) }
+    var mealType by rememberSaveable { mutableStateOf(filterUiState.meal) }
+    var diet by rememberSaveable { mutableStateOf(filterUiState.diet) }
+    var intolerancesList by rememberSaveable { mutableStateOf(filterUiState.intolerances.toList()) }
 
     Column(
         modifier = Modifier.background(color = Color.White)
     ) {
         Text(
-            text = "Filter Recipes",
+            text = stringResource(R.string.recipe_filter_modal_title),
             color = MaterialTheme.colors.onBackground,
             style = MaterialTheme.typography.h5,
             modifier = Modifier.padding(16.dp)
@@ -62,7 +49,8 @@ fun FilterScreen(
             selectedCuisineType = cuisineType,
             onCuisineTypeSelected = {
                 cuisineType = it
-                showMessage(context = context, "Selected meal type: $it")}
+                showMessage(context = context, "Selected meal type: $it")
+            }
         )
 
         MealTypeFilter(
@@ -102,7 +90,7 @@ fun FilterScreen(
         ) {
 
             TextButton(
-                onClick = { onClearFilter(filters) },
+                onClick = { searchViewModel.clearAllFilter(filterUiState = filterUiState) },
                 modifier = Modifier.padding(16.dp),
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colors.primary)
@@ -118,7 +106,7 @@ fun FilterScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { onApplyFilter(filters) },
+                onClick = { searchViewModel.saveAllFilter(filterUiState = filterUiState) },
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
@@ -135,6 +123,6 @@ fun FilterScreen(
 @Composable
 fun FilterScreenPreview() {
     CookItTheme {
-        FilterScreen(onClearFilter = {}, onApplyFilter = {})
+        FilterScreen(searchViewModel = viewModel(factory = AppViewModelProvider.Factory))
     }
 }

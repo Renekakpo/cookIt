@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,22 +10,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cookit.models.recipeList
 import com.example.cookit.navigation.NavDestination
+import com.example.cookit.ui.common.FilterScreen
 import com.example.cookit.ui.common.SearchField
 import com.example.cookit.ui.common.VerticalGridList
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.showMessage
 import kotlinx.coroutines.launch
 
-
-object SearchScreen: NavDestination {
-    override val route: String = "search_screen"
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -38,10 +36,7 @@ fun SearchScreen() {
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         sheetContent = {
-            FilterScreen(
-                onClearFilter = { coroutineScope.launch { modalSheetState.hide() } },
-                onApplyFilter = { coroutineScope.launch { modalSheetState.hide() } }
-            )
+            FilterScreen(searchViewModel = searchViewModel)
         },
     ) {
         // Content of the main screen

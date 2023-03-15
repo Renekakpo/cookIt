@@ -1,4 +1,4 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,23 +17,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.cookit.R
 import com.example.cookit.models.onboardingPages
 import com.example.cookit.navigation.NavDestination
+import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 
-object OnboardingScreen: NavDestination {
+object OnboardingScreen : NavDestination {
     override val route: String = "onboarding_screen"
 }
 
 @Composable
-fun OnboardingScreen(navController: NavController) {
+fun OnboardingScreen(
+    navController: NavController,
+    onboardingViewModel: OnboardingViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val context = LocalContext.current
-
     val onboardingPages = remember { onboardingPages }
-
     var currentPageIndex by remember { mutableStateOf(0) }
 
     Scaffold(
@@ -44,7 +48,12 @@ fun OnboardingScreen(navController: NavController) {
             ) {
                 if (currentPageIndex < onboardingPages.size - 1) {
                     TextButton(
-                        onClick = { navigateToNextScreen(navController = navController) },
+                        onClick = {
+                            navigateToNextScreen(
+                                navController = navController,
+                                viewModel = onboardingViewModel
+                            )
+                        },
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 5.dp)
                             .align(Alignment.CenterVertically)
@@ -66,7 +75,12 @@ fun OnboardingScreen(navController: NavController) {
                     }
                 } else {
                     Button(
-                        onClick = { navigateToNextScreen(navController = navController) },
+                        onClick = {
+                            navigateToNextScreen(
+                                navController = navController,
+                                viewModel = onboardingViewModel
+                            )
+                        },
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -91,9 +105,11 @@ fun OnboardingScreen(navController: NavController) {
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.Black.copy(alpha = 0.5f))) {}
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Black.copy(alpha = 0.5f))
+            ) {}
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,7 +135,8 @@ fun OnboardingScreen(navController: NavController) {
     }
 }
 
-private fun navigateToNextScreen(navController: NavController) {
+private fun navigateToNextScreen(navController: NavController, viewModel: OnboardingViewModel) {
+    viewModel.saveOnboardingCompletionState(isCompleted = true)
     navController.navigate(route = LoginRegistrationScreen.route)
 }
 
