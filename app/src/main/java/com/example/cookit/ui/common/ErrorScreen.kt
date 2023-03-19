@@ -10,8 +10,10 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.cookit.R
 import com.example.cookit.ui.theme.CookItTheme
 
 @Composable
@@ -52,7 +54,7 @@ fun ErrorScreen(
 fun ErrorScreenPreview() {
     CookItTheme {
         ErrorScreen(
-            errorMessage = "Failed to retrieve data. Kindly check your internet connexion.",
+            errorMessage = stringResource(R.string.data_retrieving_error_message),
             onRetry = {}
         )
     }

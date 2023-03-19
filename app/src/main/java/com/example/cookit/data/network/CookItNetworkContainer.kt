@@ -13,13 +13,13 @@ interface CookItNetworkContainer {
 
 @OptIn(ExperimentalSerializationApi::class)
 class DefaultCookItNetworkContainer : CookItNetworkContainer {
-    // Edamam API base url
-    private val BASE_URL = "https://api.edamam.com/api/"
+    // Spoonacular API base url
+    private val baseUrl = "https://api.spoonacular.com/"
 
     // Retrofit built instance
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(BASE_URL).build()
+        .baseUrl(baseUrl).build()
 
     // Create a retrofit service out of retrofit instance
     private val retrofitService: CookItApiService by lazy {

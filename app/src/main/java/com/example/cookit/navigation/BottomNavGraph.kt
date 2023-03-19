@@ -17,7 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.cookit.ui.screens.HomeScreen
+import com.example.cookit.ui.screens.home.HomeScreen
 import com.example.cookit.ui.screens.SettingsScreen
 import com.example.cookit.ui.screens.favorite.FavoriteScreen
 import com.example.cookit.ui.screens.search.SearchScreen

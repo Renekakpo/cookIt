@@ -48,8 +48,8 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs -> prefs[CUISINE_TYPE_FILTER] ?: "" }
 
-    suspend fun saveCuisineTypeFilter(cuisineType: String) {
-        dataStore.edit { prefs -> prefs[CUISINE_TYPE_FILTER] = cuisineType }
+    suspend fun saveCuisineTypeFilter(newValue: String) {
+        dataStore.edit { it[CUISINE_TYPE_FILTER] = newValue}
     }
 
     val mealTypeFilter: Flow<String> = dataStore.data
@@ -62,9 +62,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs -> prefs[MEAL_TYPE_FILTER] ?: "" }
 
-    suspend fun saveMealTypeFilter(mealType: String) {
-        dataStore.edit { prefs -> prefs[MEAL_TYPE_FILTER] = mealType }
-    }
 
     val dietFilter: Flow<String> = dataStore.data
         .catch {
@@ -76,10 +73,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs -> prefs[DIET_FILTER] ?: "" }
 
-    suspend fun saveDietFilter(diet: String) {
-        dataStore.edit { prefs -> prefs[DIET_FILTER] = diet }
-    }
-
     val intolerancesFilter: Flow<Set<String>> = dataStore.data
         .catch {
             if (it is IOException) {
@@ -89,10 +82,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
                 throw it
             }
         }.map { prefs -> (setOf(prefs[INTOLERANCES_FILTER] ?: "")) }
-
-    suspend fun saveIntolerancesFilter(intolerances: Set<String>) {
-        dataStore.edit { prefs -> prefs[INTOLERANCES_FILTER] = intolerances.toString() }
-    }
 
     suspend fun saveAllFilter(filterUiState: FilterUiState) {
         dataStore.edit {

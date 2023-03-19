@@ -1,65 +1,68 @@
 package com.example.cookit.data.network
 
-import com.example.cookit.models.RecipeSearchResult
-import com.example.cookit.models.network.SpecificRecipeInfo
+import com.example.cookit.models.Recipe
+import com.example.cookit.models.SearchApiRes
 import com.example.cookit.network.CookItApiService
+import com.example.cookit.utils.APP_API_KEY
 
 interface CookItNetworkRepository {
     suspend fun searchRecipes(
-        type: String,
-        appId: String,
-        appKey: String,
-        input: String,
-        ingredient: String?,
+        apiKey: String = APP_API_KEY,
+        query: String,
+        cuisine: List<String>?,
         diet: List<String>?,
-        health: List<String>?,
-        cuisineType: List<String>?,
-        dishType: List<String>?,
-        mealType: List<String>?,
-    ): RecipeSearchResult
+        type: List<String>?,
+        intolerances: List<String>?,
+    ): SearchApiRes
 
-    suspend fun getSpecificRecipeInfo(
-        id: String,
-        type: String,
-        appId: String,
-        appKey: String
-    ): SpecificRecipeInfo
+    suspend fun getRecipeInfo(
+        apiKey: String = APP_API_KEY,
+        id: Long,
+        includeNutrition: Boolean = false,
+    ): Recipe
+
+    suspend fun getRandomRecipes(
+        apiKey: String = APP_API_KEY,
+        limitLicense: Boolean?,
+        tags: List<String>?,
+        number: Int
+    ): List<Recipe>?
 }
 
 class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiService) :
     CookItNetworkRepository {
     override suspend fun searchRecipes(
-        type: String,
-        appId: String,
-        appKey: String,
-        input: String,
-        ingredient: String?,
+        apiKey: String,
+        query: String,
+        cuisine: List<String>?,
         diet: List<String>?,
-        health: List<String>?,
-        cuisineType: List<String>?,
-        dishType: List<String>?,
-        mealType: List<String>?
-    ): RecipeSearchResult {
-        return cookItApiService.searchRecipes(
-            type,
-            appId,
-            appKey,
-            input,
-            ingredient,
-            diet,
-            health,
-            cuisineType,
-            dishType,
-            mealType
-        )
-    }
+        type: List<String>?,
+        intolerances: List<String>?
+    ): SearchApiRes = cookItApiService.searchRecipes(
+        apiKey = apiKey,
+        query = query,
+        cuisine = cuisine,
+        diet = diet,
+        type = type,
+        intolerances = intolerances
+    )
 
-    override suspend fun getSpecificRecipeInfo(
-        id: String,
-        type: String,
-        appId: String,
-        appKey: String
-    ): SpecificRecipeInfo {
-        return cookItApiService.getSpecificRecipeInfo(id, type, appId, appKey)
-    }
+
+    override suspend fun getRecipeInfo(
+        apiKey: String,
+        id: Long,
+        includeNutrition: Boolean
+    ): Recipe = cookItApiService.getRecipeInfo(apiKey = apiKey, id = id, includeNutrition = false)
+
+    override suspend fun getRandomRecipes(
+        apiKey: String,
+        limitLicense: Boolean?,
+        tags: List<String>?,
+        number: Int
+    ): List<Recipe>? = cookItApiService.getRandomRecipes(
+        apiKey = apiKey,
+        limitLicense = limitLicense,
+        tags = tags,
+        number = number
+    )
 }

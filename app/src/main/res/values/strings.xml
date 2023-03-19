@@ -39,6 +39,7 @@
     <string name="clear_all_filter_text">Clear All</string>
     <string name="apply_filter_button_text">Apply Filter</string>
     <string name="recipe_filter_modal_title">Filter Recipes</string>
+    <string name="data_retrieving_error_message">Failed to retrieve data. Kindly check your internet connexion.</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

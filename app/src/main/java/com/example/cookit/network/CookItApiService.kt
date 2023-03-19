@@ -1,31 +1,47 @@
 package com.example.cookit.network
 
-import com.example.cookit.models.RecipeSearchResult
-import com.example.cookit.models.network.SpecificRecipeInfo
+import com.example.cookit.models.AnalyzedRecipeInstructionsApiRes
+import com.example.cookit.models.Recipe
+import com.example.cookit.models.SearchApiRes
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CookItApiService {
-    @GET("recipes/v2")
+    @Headers("Content-Type: application/json")
+    @GET("recipes/complexSearch")
     suspend fun searchRecipes(
-        @Query("type") type: String,
-        @Query("app_id") appId: String,
-        @Query("app_key") appKey: String,
-        @Query("q") input: String,
-        @Query("igr") ingredient: String?,
+        @Query("apiKey") apiKey: String,
+        @Query("query") query: String,
+        @Query("cuisine") cuisine: List<String>?,
         @Query("diet") diet: List<String>?,
-        @Query("health") health: List<String>?,
-        @Query("cuisineType") cuisineType: List<String>?,
-        @Query("dishType") dishType: List<String>?,
-        @Query("mealType") mealType: List<String>?,
-    ): RecipeSearchResult
+        @Query("type") type: List<String>?,
+        @Query("intolerances") intolerances: List<String>?,
+    ): SearchApiRes
 
-    @GET("recipes/v2/{id}")
-    suspend fun getSpecificRecipeInfo(
-        @Path("id") id: String,
-        @Query("type") type: String,
-        @Query("app_id") appId: String,
-        @Query("app_key") appKey: String
-    ): SpecificRecipeInfo
+    @Headers("Content-Type: application/json")
+    @GET("recipes/{id}/information")
+    suspend fun getRecipeInfo(
+        @Query("apiKey") apiKey: String,
+        @Path("id") id: Long,
+        @Query("includeNutrition") includeNutrition: Boolean
+    ): Recipe
+
+    @Headers("Content-Type: application/json")
+    @GET("recipes/random")
+    suspend fun getRandomRecipes(
+        @Query("apiKey") apiKey: String,
+        @Query("limitLicense") limitLicense: Boolean?,
+        @Query("tags") tags: List<String>?,
+        @Query("number") number: Int
+    ): List<Recipe>?
+
+    @Headers("Content-Type: application/json")
+    @GET("recipes/{id}/analyzedInstructions")
+    suspend fun getAnalyzedRecipeInstructions(
+        @Query("apiKey") apiKey: String,
+        @Query("id") id: Long,
+        @Query("stepBreakdown") stepBreakdown: Boolean
+    ): List<AnalyzedRecipeInstructionsApiRes>
 }

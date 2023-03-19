@@ -2,6 +2,7 @@ package com.example.cookit.ui.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cookit.data.network.CookItNetworkRepository
 import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.Recipe
 import kotlinx.coroutines.async
@@ -23,12 +24,15 @@ data class FilterUiState(
     val intolerances: Set<String> = emptySet()
 )
 
-class SearchViewModel(private val dataStore: CookItDataStoreRepository) : ViewModel() {
-    private val _filterUiState = MutableStateFlow(FilterUiState())
-    var filterUiState: StateFlow<FilterUiState> = _filterUiState
+class SearchViewModel(
+    private val dataStore: CookItDataStoreRepository,
+    private val cookItNetworkRepository: CookItNetworkRepository
+) : ViewModel() {
+    private var _filterUiState = MutableStateFlow(FilterUiState())
+    val filterUiState: StateFlow<FilterUiState> = _filterUiState
 
     init {
-        filterUiState = combine(
+        _filterUiState = combine(
             dataStore.cuisineTypeFilter,
             dataStore.mealTypeFilter,
             dataStore.dietFilter,
@@ -39,7 +43,7 @@ class SearchViewModel(private val dataStore: CookItDataStoreRepository) : ViewMo
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
             initialValue = FilterUiState()
-        )
+        ) as MutableStateFlow<FilterUiState>
     }
 
     fun searchRecipe(name: String) {

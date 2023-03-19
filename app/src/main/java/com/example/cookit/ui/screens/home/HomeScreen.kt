@@ -1,15 +1,12 @@
-package com.example.cookit.ui.screens
+package com.example.cookit.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,20 +19,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cookit.R
-import com.example.cookit.models.recipeList
-import com.example.cookit.ui.common.RecipeCard
-import com.example.cookit.ui.common.RecipeList
-import com.example.cookit.ui.common.RecipeFilterItems
+import com.example.cookit.models.Recipe
+import com.example.cookit.ui.common.*
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.getFoodSuggestion
 import com.example.cookit.utils.getGreetingText
 import com.example.cookit.utils.showMessage
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val country = homeViewModel.homeFilterState.collectAsState(initial = null).value
+
+    when (val homeUiState = homeViewModel.homeUiState) {
+        is HomeUiState.Loading -> {
+            LoadingScreen()
+        }
+        is HomeUiState.Error -> {
+            ErrorScreen(
+                errorMessage = stringResource(R.string.data_retrieving_error_message),
+                onRetry = { homeViewModel.getRandomRecipes(country = country) }
+            )
+        }
+        is HomeUiState.Success -> {
+            HomeContainer(
+                randomRecipes = homeUiState.randomRecipes,
+                onItemSelected = { _, item -> homeViewModel.saveCuisine(value = item.lowercase()) })
+        }
+    }
+}
+
+@Composable
+fun HomeContainer(randomRecipes: List<Recipe>, onItemSelected: (Int, String) -> Unit) {
     val context = LocalContext.current
     val name = "Lorem"
     val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
@@ -99,7 +120,7 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp),
-            recipe = recipeList.random(),
+            recipe = randomRecipes.random(),
             onItemClicked = {
                 showMessage(
                     context = context,
@@ -118,13 +139,14 @@ fun HomeScreen() {
             onItemSelected = { index, item ->
                 currentIndex = index
                 currentItem = item
+                onItemSelected(index, item)
             }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
         RecipeList(
-            recipes = recipeList,
+            recipes = randomRecipes,
             onItemClicked = {
                 showMessage(
                     context = context,
