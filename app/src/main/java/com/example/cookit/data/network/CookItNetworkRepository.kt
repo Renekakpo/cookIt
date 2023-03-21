@@ -1,5 +1,6 @@
 package com.example.cookit.data.network
 
+import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.models.SearchApiRes
 import com.example.cookit.network.CookItApiService
@@ -9,10 +10,10 @@ interface CookItNetworkRepository {
     suspend fun searchRecipes(
         apiKey: String = APP_API_KEY,
         query: String,
-        cuisine: List<String>?,
-        diet: List<String>?,
-        type: List<String>?,
-        intolerances: List<String>?,
+        cuisine: String?,
+        diet: String?,
+        type: String?,
+        intolerances: String?,
     ): SearchApiRes
 
     suspend fun getRecipeInfo(
@@ -26,7 +27,7 @@ interface CookItNetworkRepository {
         limitLicense: Boolean?,
         tags: List<String>?,
         number: Int
-    ): List<Recipe>?
+    ): RandomRecipesAPIRes
 }
 
 class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiService) :
@@ -34,10 +35,10 @@ class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiServ
     override suspend fun searchRecipes(
         apiKey: String,
         query: String,
-        cuisine: List<String>?,
-        diet: List<String>?,
-        type: List<String>?,
-        intolerances: List<String>?
+        cuisine: String?,
+        diet: String?,
+        type: String?,
+        intolerances: String?
     ): SearchApiRes = cookItApiService.searchRecipes(
         apiKey = apiKey,
         query = query,
@@ -59,7 +60,7 @@ class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiServ
         limitLicense: Boolean?,
         tags: List<String>?,
         number: Int
-    ): List<Recipe>? = cookItApiService.getRandomRecipes(
+    ): RandomRecipesAPIRes = cookItApiService.getRandomRecipes(
         apiKey = apiKey,
         limitLicense = limitLicense,
         tags = tags,

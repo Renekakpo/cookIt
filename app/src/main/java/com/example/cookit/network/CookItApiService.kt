@@ -1,6 +1,7 @@
 package com.example.cookit.network
 
 import com.example.cookit.models.AnalyzedRecipeInstructionsApiRes
+import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.models.SearchApiRes
 import retrofit2.http.GET
@@ -14,10 +15,10 @@ interface CookItApiService {
     suspend fun searchRecipes(
         @Query("apiKey") apiKey: String,
         @Query("query") query: String,
-        @Query("cuisine") cuisine: List<String>?,
-        @Query("diet") diet: List<String>?,
-        @Query("type") type: List<String>?,
-        @Query("intolerances") intolerances: List<String>?,
+        @Query("cuisine") cuisine: String?,
+        @Query("diet") diet: String?,
+        @Query("type") type: String?,
+        @Query("intolerances") intolerances: String?,
     ): SearchApiRes
 
     @Headers("Content-Type: application/json")
@@ -35,7 +36,7 @@ interface CookItApiService {
         @Query("limitLicense") limitLicense: Boolean?,
         @Query("tags") tags: List<String>?,
         @Query("number") number: Int
-    ): List<Recipe>?
+    ): RandomRecipesAPIRes
 
     @Headers("Content-Type: application/json")
     @GET("recipes/{id}/analyzedInstructions")

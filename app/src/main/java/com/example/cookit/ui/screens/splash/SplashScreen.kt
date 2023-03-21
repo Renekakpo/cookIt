@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,9 +20,10 @@ import com.example.cookit.navigation.BottomNavGraph
 import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
 import com.example.cookit.ui.screens.onboarding.OnboardingScreen
-import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 object SplashScreen : NavDestination {
     override val route: String = "splash_screen"
@@ -35,7 +34,21 @@ fun SplashScreen(
     navController: NavHostController,
     splashViewModel: SplashViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val splashUiState = splashViewModel.uiState.collectAsState().value
+    var route by remember { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        val splashUiState = splashViewModel.uiState.first() // Get the latest state
+        route = if (!splashUiState.isOnboardingCompleted) {
+            OnboardingScreen.route
+        } else if (!splashUiState.isLoginCompleted) {
+            LoginRegistrationScreen.route
+        } else {
+            BottomNavGraph.route
+        }
+        delay(timeMillis = 2000)
+        navigateToNextScreen(navController = navController, route = route)
+    }
+
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier.fillMaxSize()
@@ -52,21 +65,9 @@ fun SplashScreen(
             )
         }
     }
-
-    LaunchedEffect(true) {
-        delay(2000)
-        navigateToNextScreen(navController = navController, uiState = splashUiState)
-    }
 }
 
-private fun navigateToNextScreen(navController: NavHostController, uiState: SplashUiState) {
-    val route = if (!uiState.isOnboardingCompleted) {
-        OnboardingScreen.route
-    } else if (!uiState.isLoginCompleted) {
-        LoginRegistrationScreen.route
-    } else {
-        BottomNavGraph.route
-    }
+private fun navigateToNextScreen(navController: NavHostController, route: String) {
     navController.navigate(route = route)
 }
 

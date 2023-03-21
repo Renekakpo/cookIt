@@ -1,12 +1,13 @@
 package com.example.cookit.ui.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val country = homeViewModel.homeFilterState.collectAsState(initial = null).value
+    Log.d("Country", "$country")
 
     when (val homeUiState = homeViewModel.homeUiState) {
         is HomeUiState.Loading -> {
@@ -49,19 +51,19 @@ fun HomeScreen(
         }
         is HomeUiState.Success -> {
             HomeContainer(
-                randomRecipes = homeUiState.randomRecipes,
-                onItemSelected = { _, item -> homeViewModel.saveCuisine(value = item.lowercase()) })
+                randomRecipes = homeUiState.randomRecipes.recipes,
+                homeViewModel = homeViewModel
+            )
         }
     }
 }
 
 @Composable
-fun HomeContainer(randomRecipes: List<Recipe>, onItemSelected: (Int, String) -> Unit) {
+fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
     val context = LocalContext.current
     val name = "Lorem"
     val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
-    var currentIndex by rememberSaveable { mutableStateOf(0) }
-    var currentItem by rememberSaveable { mutableStateOf("") }
+    val randomRecipe = homeViewModel.randomRecipe.collectAsState().value
 
     Column(
         modifier = Modifier
@@ -120,7 +122,7 @@ fun HomeContainer(randomRecipes: List<Recipe>, onItemSelected: (Int, String) -> 
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp),
-            recipe = randomRecipes.random(),
+            recipe = randomRecipe,
             onItemClicked = {
                 showMessage(
                     context = context,
@@ -135,11 +137,10 @@ fun HomeContainer(randomRecipes: List<Recipe>, onItemSelected: (Int, String) -> 
             items = cuisines.map { item ->
                 item.replaceFirstChar { it.uppercase() }
             }.sorted(),
-            selectedIndex = currentIndex,
-            onItemSelected = { index, item ->
-                currentIndex = index
-                currentItem = item
-                onItemSelected(index, item)
+            selectedItem = homeViewModel.homeFilterState.collectAsState(initial = null).value,
+            onItemSelected = { item ->
+                homeViewModel.saveCuisine(value = item.lowercase())
+                homeViewModel.getRandomRecipes(country = item.lowercase())
             }
         )
 

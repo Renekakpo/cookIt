@@ -25,11 +25,15 @@ class CookIt : Application() {
      * [CookItNetworkContainer] instance used by the rest of classes to obtain dependencies
      */
     lateinit var networkDataContainer: CookItNetworkContainer
-
     lateinit var cookItDataStore: CookItDataStoreRepository
+    companion object {
+        lateinit var appContext: Context
+            private set
+    }
 
     override fun onCreate() {
         super.onCreate()
+        appContext = applicationContext
         offlineDataContainer = CookItOfflineDataContainer(this)
         networkDataContainer = DefaultCookItNetworkContainer()
         cookItDataStore = CookItDataStoreRepository(dataStore = dataStore)

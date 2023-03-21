@@ -25,7 +25,7 @@ import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.showMessage
 
 @Composable
-fun FilterScreen(searchViewModel: SearchViewModel) {
+fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit) {
     val context = LocalContext.current
     val filterUiState = searchViewModel.filterUiState.collectAsState().value
     var cuisineType by rememberSaveable { mutableStateOf(filterUiState.cuisine) }
@@ -90,7 +90,10 @@ fun FilterScreen(searchViewModel: SearchViewModel) {
         ) {
 
             TextButton(
-                onClick = { searchViewModel.clearAllFilter(filterUiState = filterUiState) },
+                onClick = {
+                    searchViewModel.clearAllFilter(filterUiState = filterUiState)
+                    closeBottomSheet()
+                },
                 modifier = Modifier.padding(16.dp),
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colors.primary)
@@ -106,7 +109,10 @@ fun FilterScreen(searchViewModel: SearchViewModel) {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { searchViewModel.saveAllFilter(filterUiState = filterUiState) },
+                onClick = {
+                    searchViewModel.saveAllFilter(filterUiState = filterUiState)
+                    closeBottomSheet()
+                },
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
@@ -123,6 +129,9 @@ fun FilterScreen(searchViewModel: SearchViewModel) {
 @Composable
 fun FilterScreenPreview() {
     CookItTheme {
-        FilterScreen(searchViewModel = viewModel(factory = AppViewModelProvider.Factory))
+        FilterScreen(
+            searchViewModel = viewModel(factory = AppViewModelProvider.Factory),
+            closeBottomSheet = {}
+        )
     }
 }

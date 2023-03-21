@@ -33,6 +33,7 @@ import com.example.cookit.utils.showMessage
 fun SearchField(
     query: String,
     onQueryChanged: (String) -> Unit,
+    onQuerySubmit: (String) -> Unit,
     onFilterClicked: () -> Unit
 ) {
     val context = LocalContext.current
@@ -86,6 +87,7 @@ fun SearchField(
                 }
                 keyboardController?.hide()
                 focusManager.clearFocus(force = true)
+                onQuerySubmit(query)
             })
         )
 
@@ -115,6 +117,6 @@ fun SearchField(
 @Composable
 fun SearchFieldPreview() {
     CookItTheme {
-        SearchField(query = "diner", onQueryChanged = {}, onFilterClicked = {})
+        SearchField(query = "diner", onQueryChanged = {}, onQuerySubmit = {}, onFilterClicked = {})
     }
 }

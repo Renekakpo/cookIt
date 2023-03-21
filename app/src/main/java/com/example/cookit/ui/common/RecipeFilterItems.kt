@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,8 +18,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RecipeFilterItems(
     items: List<String>,
-    selectedIndex: Int,
-    onItemSelected: (Int, String) -> Unit
+    selectedItem: String?,
+    onItemSelected: (String) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -28,13 +27,13 @@ fun RecipeFilterItems(
         state = listState,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        itemsIndexed(items) { index, item ->
-            val backgroundColor = if (index == selectedIndex)
+        itemsIndexed(items) { _, item ->
+            val backgroundColor = if (item.lowercase() == selectedItem?.lowercase())
                 MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
             else
                 MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
 
-            val textColor = if (index == selectedIndex)
+            val textColor = if (item.lowercase() == selectedItem?.lowercase())
                 MaterialTheme.colors.primary
             else
                 MaterialTheme.colors.onBackground
@@ -46,13 +45,13 @@ fun RecipeFilterItems(
                         shape = MaterialTheme.shapes.small
                     )
                     .clickable {
-                        onItemSelected(index, item)
+                        onItemSelected(item)
                     }
             ) {
                 Text(
                     text = item,
                     modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
-                    fontWeight = if (index == selectedIndex)
+                    fontWeight = if (item.lowercase() == selectedItem?.lowercase())
                         FontWeight.Bold
                     else
                         FontWeight.Normal,
@@ -62,7 +61,12 @@ fun RecipeFilterItems(
             }
         }
     }
-    LaunchedEffect(selectedIndex) {
-        listState.animateScrollToItem(selectedIndex)
-    }
+
+   /* LaunchedEffect(selectedItem) {
+        val selectedIndex =
+            selectedItem?.let { it -> items.indexOf(it.replaceFirstChar { it.uppercase() }) } ?: 0
+        if (selectedIndex >= 0) {
+            listState.animateScrollToItem(selectedIndex)
+        }
+    }*/
 }

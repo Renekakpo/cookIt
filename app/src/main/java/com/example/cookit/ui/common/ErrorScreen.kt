@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cookit.R
@@ -18,11 +19,12 @@ import com.example.cookit.ui.theme.CookItTheme
 
 @Composable
 fun ErrorScreen(
+    modifier: Modifier = Modifier,
     errorMessage: String,
     onRetry: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -30,7 +32,7 @@ fun ErrorScreen(
     ) {
         Icon(
             imageVector = Icons.Filled.Error,
-            contentDescription = "Error",
+            contentDescription = stringResource(R.string.error_text),
             tint = MaterialTheme.colors.error,
             modifier = Modifier.size(64.dp)
         )
@@ -38,13 +40,19 @@ fun ErrorScreen(
             text = errorMessage,
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.error,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 16.dp, bottom = 32.dp)
         )
         Button(
             onClick = { onRetry() },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Retry")
+            Text(
+                text = stringResource(R.string.retry_text),
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.padding(
+                    horizontal = 10.dp, vertical = 3.dp)
+            )
         }
     }
 }

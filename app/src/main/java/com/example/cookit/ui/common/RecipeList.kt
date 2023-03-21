@@ -39,28 +39,28 @@ fun RecipeList(recipes: List<Recipe>, onItemClicked: (Recipe) -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Unit) {
+fun RecipeCard(modifier: Modifier, recipe: Recipe?, onItemClicked: (Recipe) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
         elevation = 4.dp,
         modifier = modifier.background(color = Color.Transparent),
-        onClick = { onItemClicked(recipe) }
+        onClick = { recipe?.let { onItemClicked(it) } }
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.Transparent)
+                .background(color = Color.White)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(recipe.image)
+                    .data(recipe?.image)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(R.string.recipe_image_description),
                 contentScale = ContentScale.Crop,
                 error = painterResource(id = R.drawable.ic_broken_image),
                 placeholder = painterResource(id = R.drawable.loading_img),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             )
 
             Column(
@@ -70,7 +70,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Un
                     .align(alignment = Alignment.BottomCenter)
             ) {
                 Text(
-                    text = "${recipe.title}",
+                    text = "${recipe?.title}",
                     textAlign = TextAlign.Justify,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
@@ -85,14 +85,14 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe, onItemClicked: (Recipe) -> Un
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextWithLeftIcon(
-                        text = "${recipe.readyInMinutes} min.",
+                        text = "${recipe?.readyInMinutes} min.",
                         isTimeIcon = true
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
                     TextWithLeftIcon(
-                        text = "${recipe.spoonacularScore}",
+                        text = "${recipe?.spoonacularScore}",
                         isTimeIcon = false
                     )
                 }

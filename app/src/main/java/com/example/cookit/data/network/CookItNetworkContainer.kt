@@ -16,9 +16,15 @@ class DefaultCookItNetworkContainer : CookItNetworkContainer {
     // Spoonacular API base url
     private val baseUrl = "https://api.spoonacular.com/"
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
+    private val jsonConverter = json.asConverterFactory("application/json".toMediaType())
+
     // Retrofit built instance
     private val retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(jsonConverter)
         .baseUrl(baseUrl).build()
 
     // Create a retrofit service out of retrofit instance

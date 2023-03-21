@@ -40,6 +40,12 @@
     <string name="apply_filter_button_text">Apply Filter</string>
     <string name="recipe_filter_modal_title">Filter Recipes</string>
     <string name="data_retrieving_error_message">Failed to retrieve data. Kindly check your internet connexion.</string>
+    <string name="retry_text">Retry</string>
+    <string name="error_text">Error</string>
+    <string name="search_screen_content_description">Explore new flavors and find your next favorite recipe! Start your search by entering a dish name above.</string>
+    <string name="search_screen_title">Flavor Finder</string>
+    <string name="search_screen_subtitle">Search for Delicious Recipes</string>
+    <string name="empty_search_results_text">We\'re sorry, we could not find a recipe matching your search. Please try a different search term.</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

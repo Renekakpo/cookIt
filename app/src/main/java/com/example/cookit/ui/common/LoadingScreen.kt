@@ -14,9 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.example.cookit.ui.theme.CookItTheme
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
+            .fillMaxSize()
             .background(color = Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
