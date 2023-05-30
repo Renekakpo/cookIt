@@ -119,14 +119,14 @@ fun OnboardingScreen(
                     text = stringResource(onboardingPages[currentPageIndex].titleResId),
                     style = MaterialTheme.typography.h1,
                     color = MaterialTheme.colors.onPrimary,
-                    textAlign = TextAlign.Justify,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(
                     text = stringResource(onboardingPages[currentPageIndex].descriptionResId),
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onPrimary,
-                    textAlign = TextAlign.Justify,
+                    textAlign = TextAlign.Center,
                 )
             }
         }

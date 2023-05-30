@@ -2,6 +2,7 @@ package com.example.cookit.database
 
 import androidx.room.*
 import com.example.cookit.models.Recipe
+import com.example.cookit.utils.RECIPE_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,9 +19,9 @@ interface RecipeDao {
     @Delete
     suspend fun delete(recipe: Recipe)
 
-    @Query("SELECT * FROM items WHERE id = :id")
+    @Query("SELECT * FROM $RECIPE_TABLE_NAME WHERE id = :id")
     fun getItem(id: Int): Flow<Recipe>
 
-    @Query("SELECT * FROM items ORDER BY name ASC")
+    @Query("SELECT * FROM $RECIPE_TABLE_NAME ORDER BY title ASC")
     fun getAllItems(): Flow<List<Recipe>>
 }

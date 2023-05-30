@@ -1,6 +1,5 @@
 package com.example.cookit.navigation
 
-import com.example.cookit.ui.screens.splash.SplashScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -12,7 +11,7 @@ import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
 import com.example.cookit.ui.screens.onboarding.OnboardingScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailsScreen
-
+import com.example.cookit.ui.screens.splash.SplashScreen
 
 sealed class BottomNavScreen(val route: String, val label: String, val iconID: Int) {
     object Home : BottomNavScreen("home", "Home", R.drawable.ic_home)

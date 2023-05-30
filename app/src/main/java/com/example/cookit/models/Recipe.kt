@@ -2,13 +2,17 @@ package com.example.cookit.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.cookit.models.converters.AnalyzedInstructionsConverters
+import com.example.cookit.models.converters.StringListConverters
+import com.example.cookit.utils.RECIPE_TABLE_NAME
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 /**
  * Entity data class represents a single row in the database.
  */
-@Entity(tableName = "recipes")
+@Entity(tableName = RECIPE_TABLE_NAME)
 @Serializable
 data class Recipe(
     @PrimaryKey(autoGenerate = true)
@@ -30,18 +34,22 @@ data class Recipe(
     val healthScore: Double? = 0.0,
     val spoonacularScore: Double? = 0.0,
     val pricePerServing: Double? = 0.0,
+    @TypeConverters(AnalyzedInstructionsConverters::class)
     val analyzedInstructions: List<AnalyzedRecipeInstructionsApiRes>? = null,
     val cheap: Boolean? = false,
     val creditsText: String? = null,
-    val cuisines: List<String?>? = null,
+    @TypeConverters(StringListConverters::class)
+    val cuisines: List<String>? = null,
     val dairyFree: Boolean? = false,
-    val diets: List<String?>? = null,
+    @TypeConverters(StringListConverters::class)
+    val diets: List<String>? = null,
     val gaps: String? = null,
     val glutenFree: Boolean? = false,
     val instructions: String? = null,
     val ketogenic: Boolean? = false,
     val lowFodmap: Boolean? = false,
-    val occasions: List<String?>? = null,
+    @TypeConverters(StringListConverters::class)
+    val occasions: List<String>? = null,
     val sustainable: Boolean? = false,
     val vegan: Boolean? = false,
     val vegetarian: Boolean? = false,
@@ -49,7 +57,9 @@ data class Recipe(
     val veryPopular: Boolean? = false,
     val whole30: Boolean? = false,
     val weightWatcherSmartPoints: Int? = 0,
-    val dishTypes: List<String?>? = null,
+    @TypeConverters(StringListConverters::class)
+    val dishTypes: List<String>? = null,
+    @TypeConverters(ExtendedIngredient::class)
     val extendedIngredients: List<ExtendedIngredient> = emptyList()
 )
 
@@ -62,7 +72,7 @@ data class ExtendedIngredient(
     val id: Int? = 0,
     val image: String? = null,
     val measures: Map<String, Measure>,
-    val meta: List<String?>?,
+    val meta: List<String>?,
     val name: String? = null,
     val nameClean: String? = null,
     val original: String? = null,

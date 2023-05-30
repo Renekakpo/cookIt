@@ -36,7 +36,7 @@ fun SplashScreen(
 ) {
     var route by remember { mutableStateOf("") }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(splashViewModel.uiState) {
         val splashUiState = splashViewModel.uiState.first() // Get the latest state
         route = if (!splashUiState.isOnboardingCompleted) {
             OnboardingScreen.route

@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.launch
 
-
 sealed interface SearchUiState {
     object Loading : SearchUiState
     data class Error(val errorMessage: String) : SearchUiState
@@ -41,11 +40,11 @@ class SearchViewModel(
         private set
 
     private val _filterUiState = MutableStateFlow(FilterUiState())
-    val filterUiState: StateFlow<FilterUiState>
-        get() = _filterUiState.asStateFlow()
+    var filterUiState: StateFlow<FilterUiState> = _filterUiState.asStateFlow()
+    private set
 
     init {
-        _filterUiState.value = combine(
+        combine(
             dataStore.cuisineTypeFilter,
             dataStore.mealTypeFilter,
             dataStore.dietFilter,
@@ -56,19 +55,21 @@ class SearchViewModel(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
             initialValue = FilterUiState()
-        ).value
+        ).onEach {
+            _filterUiState.value = it
+            Log.d("Filter", "$it")
+        }.launchIn(scope = viewModelScope)
     }
 
-    fun searchRecipe(query: String) {
-        SearchUiState.Loading
+    fun searchRecipe(query: String, filter: FilterUiState) {
         viewModelScope.launch {
             searchUiState = try {
                 val res = networkRepository.searchRecipes(
                     query = query,
-                    cuisine = _filterUiState.first().cuisine.ifEmpty { null },
-                    diet = _filterUiState.first().diet.ifEmpty { null },
-                    type = _filterUiState.first().meal.ifEmpty { null },
-                    intolerances = _filterUiState.first().intolerances.joinToString { ", " }
+                    cuisine = filter.cuisine.ifEmpty { null },
+                    diet = filter.diet.ifEmpty { null },
+                    type = filter.meal.ifEmpty { null },
+                    intolerances = filter.intolerances.joinToString { ", " }
                 )
                 if (res.results.isNullOrEmpty()) {
                     SearchUiState.Error(errorMessage = appContext.getString(R.string.empty_search_results_text))
@@ -82,15 +83,27 @@ class SearchViewModel(
         }
     }
 
-    fun saveAllFilter(filterUiState: FilterUiState) {
-        viewModelScope.launch {
-            dataStore.saveAllFilter(filterUiState = filterUiState)
+    fun updateFilterUiState(
+        cuisine: String? = null,
+        meal: String? = null,
+        diet: String? = null,
+        intolerances: Set<String>? = null
+    ) {
+        _filterUiState.update { currentState ->
+            FilterUiState(
+                cuisine = cuisine ?: currentState.cuisine,
+                meal = meal ?: currentState.meal,
+                diet = diet ?: currentState.diet,
+                intolerances = intolerances ?: currentState.intolerances
+            )
         }
     }
 
-    fun clearAllFilter(filterUiState: FilterUiState) {
-        viewModelScope.launch {
-            dataStore.clearAllFilter()
-        }
+    fun saveAllFilter(filterUiState: FilterUiState) = viewModelScope.launch {
+        dataStore.saveAllFilter(filterUiState = filterUiState)
+    }
+
+    fun clearAllFilter() = viewModelScope.launch {
+        dataStore.clearAllFilter()
     }
 }

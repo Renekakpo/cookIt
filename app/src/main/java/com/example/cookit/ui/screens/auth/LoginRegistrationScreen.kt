@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -243,18 +244,19 @@ fun LoginRegistrationScreen(navController: NavController, viewModel: LoginRegist
             onClick = { onAuthButtonClicked(navController = navController, viewModel = viewModel) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(45.dp),
+                .height(50.dp),
             shape = MaterialTheme.shapes.medium
         ) {
             Text(
                 text = if (isRegistration) stringResource(R.string.register_text) else stringResource(
                     id = R.string.login_button_text
                 ),
+                style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onSecondary
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         TextButton(
             onClick = { isRegistration = !isRegistration },
@@ -264,6 +266,7 @@ fun LoginRegistrationScreen(navController: NavController, viewModel: LoginRegist
                 text = if (isRegistration) stringResource(R.string.login_option_text) else stringResource(
                     R.string.register_option_text
                 ),
+                style = MaterialTheme.typography.h3,
                 color = MaterialTheme.colors.secondary
             )
         }

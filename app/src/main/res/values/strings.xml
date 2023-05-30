@@ -46,6 +46,13 @@
     <string name="search_screen_title">Flavor Finder</string>
     <string name="search_screen_subtitle">Search for Delicious Recipes</string>
     <string name="empty_search_results_text">We\'re sorry, we could not find a recipe matching your search. Please try a different search term.</string>
+    <string name="intolerances_text">Intolerances</string>
+    <string name="filterchip_icon_description">Localized Description</string>
+    <string name="favorite_recipe_title_text">Flavor Haven</string>
+    <string name="favorite_recipe_subtitle_text">Your personal recipe collection</string>
+    <string name="favorite_recipe_empty_content_text">Start saving your favorite recipes</string>
+    <string name="diet_text">Diet</string>
+    <string name="cuisine_type_text">Cuisine Type</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

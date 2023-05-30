@@ -7,12 +7,12 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,16 +22,22 @@ import com.example.cookit.R
 import com.example.cookit.ui.screens.search.SearchViewModel
 import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.AppViewModelProvider
-import com.example.cookit.utils.showMessage
 
 @Composable
 fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit) {
-    val context = LocalContext.current
-    val filterUiState = searchViewModel.filterUiState.collectAsState().value
-    var cuisineType by rememberSaveable { mutableStateOf(filterUiState.cuisine) }
-    var mealType by rememberSaveable { mutableStateOf(filterUiState.meal) }
-    var diet by rememberSaveable { mutableStateOf(filterUiState.diet) }
-    var intolerancesList by rememberSaveable { mutableStateOf(filterUiState.intolerances.toList()) }
+    val filterUiState by searchViewModel.filterUiState.collectAsState()
+    val cuisines = stringArrayResource(id = R.array.cuisine)
+        .map { item -> item.replaceFirstChar { it.uppercase() } }
+        .sorted()
+    val meals = stringArrayResource(id = R.array.meal)
+        .map { item -> item.replaceFirstChar { it.uppercase() } }
+        .sorted()
+    val diets = stringArrayResource(id = R.array.diet)
+        .map { item -> item.replaceFirstChar { it.uppercase() } }
+        .sorted()
+    val intolerances = stringArrayResource(id = R.array.intolerances)
+        .map { item -> item.replaceFirstChar { it.uppercase() } }
+        .sorted()
 
     Column(
         modifier = Modifier.background(color = Color.White)
@@ -44,42 +50,34 @@ fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit)
         )
 
         CuisineTypeFilter(
-            cuisineTypes = stringArrayResource(id = R.array.cuisine).map { item -> item.replaceFirstChar { it.uppercase() } }
-                .sorted(),
-            selectedCuisineType = cuisineType,
-            onCuisineTypeSelected = {
-                cuisineType = it
-                showMessage(context = context, "Selected meal type: $it")
+            cuisineTypes = cuisines,
+            selectedCuisineType = filterUiState.cuisine,
+            onCuisineTypeSelected = { cuisine ->
+                searchViewModel.updateFilterUiState(cuisine = cuisine)
             }
         )
 
         MealTypeFilter(
-            mealTypes = stringArrayResource(id = R.array.meal).map { item -> item.replaceFirstChar { it.uppercase() } }
-                .sorted(),
-            selectedMealType = mealType,
-            onMealTypeSelected = {
-                mealType = it
-                showMessage(context = context, "Selected meal type: $it")
+            mealTypes = meals,
+            selectedMealType = filterUiState.meal,
+            onMealTypeSelected = { meal ->
+                searchViewModel.updateFilterUiState(meal = meal)
             }
         )
 
         DietFilter(
-            diets = stringArrayResource(id = R.array.diet).map { item -> item.replaceFirstChar { it.uppercase() } }
-                .sorted(),
-            selectedDiet = diet,
-            onDietSelected = {
-                diet = it
-                showMessage(context = context, "Selected diet: $it")
+            diets = diets,
+            selectedDiet = filterUiState.diet,
+            onDietSelected = { diet ->
+                searchViewModel.updateFilterUiState(diet = diet)
             }
         )
 
         IntoleranceFilter(
-            intolerances = stringArrayResource(id = R.array.intolerances).map { item -> item.replaceFirstChar { it.uppercase() } }
-                .sorted(),
-            selectedIntolerances = intolerancesList.toSet(),
-            onIntoleranceSelected = {
-                intolerancesList = it.toList()
-                showMessage(context = context, "Selected intolerances: $it")
+            intolerances = intolerances,
+            selectedIntolerances = filterUiState.intolerances.map { it.lowercase() }.toSet(),
+            onIntoleranceSelected = { intolerances ->
+                searchViewModel.updateFilterUiState(intolerances = intolerances)
             }
         )
 
@@ -91,7 +89,7 @@ fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit)
 
             TextButton(
                 onClick = {
-                    searchViewModel.clearAllFilter(filterUiState = filterUiState)
+                    searchViewModel.clearAllFilter()
                     closeBottomSheet()
                 },
                 modifier = Modifier.padding(16.dp),

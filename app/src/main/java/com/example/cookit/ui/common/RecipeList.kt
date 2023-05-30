@@ -3,6 +3,7 @@ package com.example.cookit.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
@@ -19,17 +20,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.size.Scale
 import com.example.cookit.R
 import com.example.cookit.models.Recipe
 
 @Composable
 fun RecipeList(recipes: List<Recipe>, onItemClicked: (Recipe) -> Unit) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
         itemsIndexed(recipes) { _, recipe ->
             RecipeCard(
-                modifier = Modifier.width(180.dp),
+                modifier = Modifier.fillMaxWidth().height(250.dp),
                 recipe = recipe,
                 onItemClicked = onItemClicked
             )
@@ -55,6 +57,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe?, onItemClicked: (Recipe) -> U
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data(recipe?.image)
                     .crossfade(true)
+                    .scale(Scale.FILL)
                     .build(),
                 contentDescription = stringResource(R.string.recipe_image_description),
                 contentScale = ContentScale.Crop,

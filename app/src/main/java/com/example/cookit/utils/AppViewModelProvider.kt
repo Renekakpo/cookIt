@@ -3,6 +3,7 @@ package com.example.cookit.utils
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cookit.ui.screens.auth.LoginRegistrationViewModel
+import com.example.cookit.ui.screens.favorite.FavoriteRecipeViewModel
 import com.example.cookit.ui.screens.home.HomeViewModel
 import com.example.cookit.ui.screens.onboarding.OnboardingViewModel
 import com.example.cookit.ui.screens.recipeItem.RecipeInfoViewModel
@@ -45,9 +46,14 @@ object AppViewModelProvider {
 
         // Initializer for RecipeInfoViewModel
         initializer {
-            val dataStoreRepos = cookItApplication().cookItDataStore
             val networkRepository = cookItApplication().networkDataContainer.cookItNetworkRepository
             RecipeInfoViewModel(networkRepository = networkRepository)
+        }
+
+        // Initializer for FavoriteRecipeViewModel
+        initializer {
+            val recipeRepository = cookItApplication().offlineDataContainer.recipesRepository
+            FavoriteRecipeViewModel(recipeRepository = recipeRepository)
         }
     }
 }

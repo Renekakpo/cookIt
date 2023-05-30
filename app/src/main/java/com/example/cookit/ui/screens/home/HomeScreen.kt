@@ -121,7 +121,7 @@ fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
         RecipeCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp),
+                .height(250.dp),
             recipe = randomRecipe,
             onItemClicked = {
                 showMessage(

@@ -1,19 +1,18 @@
 package com.example.cookit.ui.common
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.cookit.R
 
 @Composable
 fun CuisineTypeFilter(
@@ -24,9 +23,10 @@ fun CuisineTypeFilter(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp)) {
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+    ) {
         Text(
-            text = "Cuisine Type",
+            text = stringResource(R.string.cuisine_type_text),
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.onBackground
         )
@@ -38,7 +38,7 @@ fun CuisineTypeFilter(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(cuisineTypes) { cuisineType ->
-                val isSelected = cuisineType == selectedCuisineType
+                val isSelected = cuisineType.lowercase() == selectedCuisineType.lowercase()
                 CuisineTypeChip(
                     cuisineType = cuisineType,
                     isSelected = isSelected,
