@@ -8,13 +8,15 @@ import androidx.room.TypeConverters
 import com.example.cookit.models.Recipe
 import com.example.cookit.models.converters.AnalyzedInstructionsConverters
 import com.example.cookit.models.converters.ExtendedIngredientConverters
+import com.example.cookit.models.converters.NutritionConverters
 import com.example.cookit.models.converters.StringListConverters
 
 @Database(entities = [Recipe::class], version = 1, exportSchema = false)
 @TypeConverters(
     AnalyzedInstructionsConverters::class,
     ExtendedIngredientConverters::class,
-    StringListConverters::class
+    StringListConverters::class,
+    NutritionConverters::class
 )
 abstract class CookItDatabase : RoomDatabase() {
 

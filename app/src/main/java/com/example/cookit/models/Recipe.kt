@@ -60,7 +60,9 @@ data class Recipe(
     @TypeConverters(StringListConverters::class)
     val dishTypes: List<String>? = null,
     @TypeConverters(ExtendedIngredient::class)
-    val extendedIngredients: List<ExtendedIngredient> = emptyList()
+    val extendedIngredients: List<ExtendedIngredient> = emptyList(),
+    @TypeConverters(Nutrition::class)
+    val nutrition: Nutrition
 )
 
 @Serializable
@@ -86,6 +88,84 @@ data class Measure(
     val unitLong: String? = null,
     val unitShort: String? = null
 )
+
+@Serializable
+data class Nutrition(
+    val nutrients: List<Nutrient>? = null,
+    val properties: List<NutProperty>? = null,
+    val flavonoids: List<NutFlavonoid>? = null,
+    val ingredients: List<NutIngredient>? = null,
+    val caloricBreakdown: CaloricBreakdown? = null,
+    val weightPerServing: WeightPerServing? = null,
+)
+
+@Serializable
+data class Nutrient(
+    val name: String? = null,
+    val amount: Double? = null,
+    val unit: String? = null,
+    val percentOfDailyNeeds: Double? = null
+)
+
+@Serializable
+data class NutProperty(
+    val name: String? = null,
+    val amount: Double? = null,
+    val unit: String? = null
+)
+
+@Serializable
+data class NutFlavonoid(
+    val name: String? = null,
+    val amount: Double? = null,
+    val unit: String? = null
+)
+
+@Serializable
+data class NutIngredient(
+    val id: Long = 0,
+    val name: String? = null,
+    val amount: Double? = null,
+    val unit: String? = null
+)
+
+@Serializable
+data class CaloricBreakdown(
+    val percentProtein: Double? = null,
+    val percentFat: Double? = null,
+    val percentCarbs: Double? = null
+)
+
+@Serializable
+data class WeightPerServing(
+    val amount: Double? = null,
+    val unit: String? = null
+)
+
+val nutrients = listOf(
+    Nutrient("Protein", 10.0, "g", 20.0),
+    Nutrient("Fat", 5.0, "g", 10.0),
+    Nutrient("Carbohydrates", 30.0, "g", 60.0)
+)
+
+val properties = listOf(
+    NutProperty("Fiber", 3.0, "g"),
+    NutProperty("Vitamin C", 20.0, "mg")
+)
+
+val flavonoids = listOf(
+    NutFlavonoid("Quercetin", 15.0, "mg"),
+    NutFlavonoid("Kaempferol", 10.0, "mg")
+)
+
+val ingredients = listOf(
+    NutIngredient(1, "Ingredient 1", 100.0, "g"),
+    NutIngredient(2, "Ingredient 2", 50.0, "g")
+)
+
+val caloricBreakdown = CaloricBreakdown(25.0, 30.0, 45.0)
+
+val weightPerServing = WeightPerServing(150.0, "g")
 
 val recipe = Recipe(
     id = 716429,
@@ -262,6 +342,14 @@ val recipe = Recipe(
             originalName = "about frozen cauliflower florets, thawed, cut into bite-sized pieces",
             unit = "cups"
         )
+    ),
+    nutrition = Nutrition(
+        nutrients = nutrients,
+        properties = properties,
+        flavonoids = flavonoids,
+        ingredients = ingredients,
+        caloricBreakdown = caloricBreakdown,
+        weightPerServing = weightPerServing
     )
 )
 

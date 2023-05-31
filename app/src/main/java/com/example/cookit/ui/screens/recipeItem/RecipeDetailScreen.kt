@@ -2,11 +2,12 @@ package com.example.cookit.ui.screens.recipeItem
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -16,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,10 +46,6 @@ fun RecipeDetailsScreen(
     onStartCookingClicked: () -> Unit,
     navigateUp: () -> Unit
 ) {
-
-    val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
-    val items = cuisines.map { item -> item.replaceFirstChar { it.uppercase() } }.sorted()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -89,11 +86,13 @@ fun RecipeDetailsScreen(
                 .crossfade(enable = true)
                 .build(),
             contentDescription = "Recipe image",
+            contentScale = ContentScale.Crop,
             error = painterResource(id = R.drawable.ic_broken_image),
             placeholder = painterResource(id = R.drawable.loading_img),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
+                .aspectRatio(ratio = 1f, matchHeightConstraintsFirst = true)
                 .padding(start = 15.dp, end = 15.dp),
         )
 
@@ -115,9 +114,10 @@ fun RecipeDetailsScreen(
                 .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp)
                 .border(
-                    border = BorderStroke(width = 2.dp, color = Color.Black.copy(alpha = 0.4f)),
+                    border = BorderStroke(width = 2.dp, color = Color.Black.copy(alpha = 0.1f)),
                     shape = MaterialTheme.shapes.medium
-                )
+                ),
+            contentAlignment = Alignment.Center
         ) {
             Row(
                 modifier = Modifier.padding(8.dp)
@@ -127,7 +127,7 @@ fun RecipeDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "350",
+                        text = "${recipe.nutrition.caloricBreakdown?.percentFat?.toInt() ?: 0}%",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -136,7 +136,7 @@ fun RecipeDetailsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Kcal",
+                        text = "Fat",
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -149,7 +149,7 @@ fun RecipeDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "250",
+                        text = "${recipe.nutrition.caloricBreakdown?.percentProtein?.toInt() ?: 0}%",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -158,7 +158,7 @@ fun RecipeDetailsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "grams",
+                        text = "Proteins",
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -171,7 +171,7 @@ fun RecipeDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "4.7",
+                        text = "${recipe.servings ?: 0}",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -180,7 +180,7 @@ fun RecipeDetailsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "rating",
+                        text = "Servings",
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -193,7 +193,7 @@ fun RecipeDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "15",
+                        text = "${recipe.cookingMinutes ?: 0}",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -202,7 +202,7 @@ fun RecipeDetailsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "minutes",
+                        text = "Minutes",
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -218,7 +218,7 @@ fun RecipeDetailsScreen(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(items) {item ->
+            items(recipe.dishTypes ?: emptyList<String>()) { item ->
                 Box(
                     modifier = Modifier
                         .background(
@@ -227,7 +227,7 @@ fun RecipeDetailsScreen(
                         )
                 ) {
                     Text(
-                        text = item,
+                        text = item.replaceFirstChar { it.uppercase() },
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 15.dp),
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.body1,
@@ -254,7 +254,7 @@ fun RecipeDetailsScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "6 Items",
+                text = "${recipe.extendedIngredients.size} Item(s)",
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
@@ -267,8 +267,7 @@ fun RecipeDetailsScreen(
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 15.dp, end = 15.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 10.dp),
         ) {
             items(recipe.extendedIngredients) { extendedIngredient ->
                 IngredientItem(ingredient = extendedIngredient)
@@ -289,7 +288,7 @@ fun RecipeDetailsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.FavoriteBorder,
-                    contentDescription = "Like recipe",
+                    contentDescription = "Add recipe to your favorite",
                     tint = Color.Black.copy(alpha = 0.4f)
                 )
             }
@@ -300,8 +299,8 @@ fun RecipeDetailsScreen(
                 onClick = onStartCookingClicked,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                shape = MaterialTheme.shapes.large
+                    .height(45.dp),
+                shape = MaterialTheme.shapes.medium
             ) {
                 Text(
                     text = "Start Cooking",
@@ -313,7 +312,7 @@ fun RecipeDetailsScreen(
 
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = "Like recipe",
+                    contentDescription = "",
                     tint = MaterialTheme.colors.onPrimary
                 )
             }
@@ -327,42 +326,54 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colors.surface.copy(alpha = 0.8f))
+            .padding(start = 5.dp, end = 5.dp, bottom = 8.dp,)
             .clickable { /* Do nothing */ }
-            .padding(8.dp)
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(ingredient.image)
-                .crossfade(true)
-                .build(),
-            contentDescription = "Ingredient image",
-            error = painterResource(id = R.drawable.ic_broken_image),
-            placeholder = painterResource(id = R.drawable.loading_img),
+        Box(
             modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column {
-            Text(
-                text = "${ingredient.name}",
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onSurface,
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "${ingredient.measures["Us"]?.amount}${ingredient.measures["Us"]?.unitShort}",
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                .size(45.dp)
+                .background(
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f),
+                shape = MaterialTheme.shapes.medium),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(ingredient.image)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Ingredient image",
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = R.drawable.ic_broken_image),
+                placeholder = painterResource(id = R.drawable.loading_img),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(7.dp)
+                    .aspectRatio(ratio = 1f, matchHeightConstraintsFirst = true)
+                    .clip(CircleShape)
             )
         }
+
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Text(
+            text = "${ingredient.name?.replaceFirstChar { it.uppercase() }}",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Text(
+            text = "${ingredient.measures["Us"]?.amount}${ingredient.measures["Us"]?.unitShort}",
+            style = MaterialTheme.typography.body2,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
+        )
     }
 }
 
