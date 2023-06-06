@@ -1,6 +1,5 @@
 package com.example.cookit.ui.screens.search
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +11,6 @@ import com.example.cookit.app.CookIt.Companion.appContext
 import com.example.cookit.data.network.CookItNetworkRepository
 import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.Recipe
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.launch
@@ -28,7 +26,7 @@ data class FilterUiState(
     val cuisine: String = "",
     val meal: String = "",
     val diet: String = "",
-    val intolerances: Set<String> = emptySet()
+    val intolerances: List<String>? = null
 )
 
 class SearchViewModel(
@@ -41,7 +39,7 @@ class SearchViewModel(
 
     private val _filterUiState = MutableStateFlow(FilterUiState())
     var filterUiState: StateFlow<FilterUiState> = _filterUiState.asStateFlow()
-    private set
+        private set
 
     init {
         combine(
@@ -50,7 +48,11 @@ class SearchViewModel(
             dataStore.dietFilter,
             dataStore.intolerancesFilter
         ) { cuisine, meal, diet, intolerances ->
-            FilterUiState(cuisine = cuisine, meal = meal, diet = diet, intolerances = intolerances)
+            FilterUiState(
+                cuisine = cuisine,
+                meal = meal,
+                diet = diet,
+                intolerances = intolerances.takeIf { it.isNotEmpty() }?.filter { it.isNotEmpty() })
         }.stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
@@ -69,7 +71,7 @@ class SearchViewModel(
                     cuisine = filter.cuisine.ifEmpty { null },
                     diet = filter.diet.ifEmpty { null },
                     type = filter.meal.ifEmpty { null },
-                    intolerances = filter.intolerances.joinToString { ", " }
+                    intolerances = filter.intolerances?.joinToString { ", " }
                 )
                 if (res.results.isNullOrEmpty()) {
                     SearchUiState.Error(errorMessage = appContext.getString(R.string.empty_search_results_text))
@@ -87,7 +89,7 @@ class SearchViewModel(
         cuisine: String? = null,
         meal: String? = null,
         diet: String? = null,
-        intolerances: Set<String>? = null
+        intolerances: List<String>? = null
     ) {
         _filterUiState.update { currentState ->
             FilterUiState(

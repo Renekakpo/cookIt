@@ -1,12 +1,12 @@
 package com.example.cookit.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +33,16 @@ import com.example.cookit.utils.getGreetingText
 import com.example.cookit.utils.showMessage
 
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+fun HomeItemScreen(
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onItemSelected: (Long) -> Unit = {}
 ) {
     val country = homeViewModel.homeFilterState.collectAsState(initial = null).value
-    Log.d("Country", "$country")
+
+    LaunchedEffect(true) {
+        homeViewModel.getRandomRecipes(country = null)
+    }
 
     when (val homeUiState = homeViewModel.homeUiState) {
         is HomeUiState.Loading -> {
@@ -51,22 +56,29 @@ fun HomeScreen(
         }
         is HomeUiState.Success -> {
             HomeContainer(
+                modifier = modifier,
                 randomRecipes = homeUiState.randomRecipes.recipes,
-                homeViewModel = homeViewModel
+                homeViewModel = homeViewModel,
+                navigateToItemDetails = onItemSelected
             )
         }
     }
 }
 
 @Composable
-fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
+fun HomeContainer(
+    modifier: Modifier,
+    randomRecipes: List<Recipe>,
+    homeViewModel: HomeViewModel,
+    navigateToItemDetails: (Long) -> Unit
+) {
     val context = LocalContext.current
     val name = "Lorem"
     val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
     val randomRecipe = homeViewModel.randomRecipe.collectAsState().value
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(top = 15.dp, start = 10.dp, end = 10.dp)
             .background(color = MaterialTheme.colors.background)
@@ -123,12 +135,7 @@ fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
                 .fillMaxWidth()
                 .height(250.dp),
             recipe = randomRecipe,
-            onItemClicked = {
-                showMessage(
-                    context = context,
-                    message = "Navigate to recipe ${it.title} details screen"
-                )
-            }
+            onItemClicked = { navigateToItemDetails(it.id) }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -148,12 +155,7 @@ fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
 
         RecipeList(
             recipes = randomRecipes,
-            onItemClicked = {
-                showMessage(
-                    context = context,
-                    message = "Navigate to recipe ${it.title} details screen"
-                )
-            }
+            onItemClicked = { navigateToItemDetails(it.id) }
         )
 
     }
@@ -163,6 +165,6 @@ fun HomeContainer(randomRecipes: List<Recipe>, homeViewModel: HomeViewModel) {
 @Composable
 fun HomeScreenPreview() {
     CookItTheme {
-        HomeScreen()
+        HomeItemScreen(modifier = Modifier)
     }
 }

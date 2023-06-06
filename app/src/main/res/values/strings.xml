@@ -53,6 +53,12 @@
     <string name="favorite_recipe_empty_content_text">Start saving your favorite recipes</string>
     <string name="diet_text">Diet</string>
     <string name="cuisine_type_text">Cuisine Type</string>
+    <string name="start_cooking_button_text">Start Cooking</string>
+    <string name="favorite_icon_description">Add recipe to your favorite</string>
+    <string name="ingredient_image_description">Ingredient image</string>
+    <string name="ingredients_text">Ingredients</string>
+    <string name="items_text">%s Item(s)</string>
+    <string name="recipe_details_screen_title">Recipe</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

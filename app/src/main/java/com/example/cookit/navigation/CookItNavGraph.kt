@@ -2,53 +2,54 @@ package com.example.cookit.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.cookit.R
-import com.example.cookit.models.recipe
+import androidx.navigation.navArgument
 import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
 import com.example.cookit.ui.screens.onboarding.OnboardingScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailsScreen
 import com.example.cookit.ui.screens.splash.SplashScreen
 
-sealed class BottomNavScreen(val route: String, val label: String, val iconID: Int) {
-    object Home : BottomNavScreen("home", "Home", R.drawable.ic_home)
-    object Search : BottomNavScreen("search", "Search", R.drawable.ic_search)
-    object Favorite : BottomNavScreen("favorite", "Favorite", R.drawable.ic_favorite)
-    object Settings : BottomNavScreen("settings", "Settings", R.drawable.ic_settings)
-}
-
 @Composable
-fun CookItMainNavHost(modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
+fun CookItMainNavHost(modifier: Modifier = Modifier, navHostController: NavHostController) {
 
     NavHost(
-        navController = navController,
+        navController = navHostController,
         startDestination = SplashScreen.route,
         modifier = modifier
     ) {
         composable(route = SplashScreen.route) {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navHostController)
         }
         composable(route = OnboardingScreen.route) {
-            OnboardingScreen(navController = navController)
+            OnboardingScreen(navController = navHostController)
         }
         composable(route = LoginRegistrationScreen.route) {
-            LoginRegistrationScreen(navController = navController)
+            LoginRegistrationScreen(navController = navHostController)
         }
         composable(route = BottomNavGraph.route) {
-            CookItBottomNavHost(navController = rememberNavController())
+            CookItBottomNavHost(navController = navHostController)
         }
-        composable(route = RecipeDetailScreen.route) {
-            RecipeDetailsScreen(
-                recipe = recipe,
-                onBackClicked = { navController.popBackStack() },
-                onLikeClicked = { },
-                onStartCookingClicked = { },
-                navigateUp = { navController.navigateUp() }
-            )
+        composable(
+            route = "${RecipeDetailScreen.route}/{itemId}",
+            arguments = listOf(navArgument(name = "itemId") {
+                type = NavType.LongType
+            })
+        ) { navBackStackEntry ->
+            val itemId = navBackStackEntry.arguments?.getLong("itemId")
+            if (itemId != null) {
+                RecipeDetailsScreen(
+                    id = itemId,
+                    onBackClicked = { navHostController.popBackStack() },
+                    navigateUp = { navHostController.navigateUp() }
+                )
+            } else {
+                // Navigate back
+                navHostController.popBackStack()
+            }
         }
     }
 }

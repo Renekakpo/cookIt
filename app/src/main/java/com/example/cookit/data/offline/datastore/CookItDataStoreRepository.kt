@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import com.example.cookit.ui.screens.search.FilterUiState
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -73,7 +75,7 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs -> prefs[DIET_FILTER] ?: "" }
 
-    val intolerancesFilter: Flow<Set<String>> = dataStore.data
+    val intolerancesFilter: Flow<List<String>> = dataStore.data
         .catch {
             if (it is IOException) {
                 Log.d(TAG, "Error reading preferences", it)
@@ -81,7 +83,12 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             } else {
                 throw it
             }
-        }.map { prefs -> (setOf(prefs[INTOLERANCES_FILTER] ?: "")) }
+        }.map { prefs ->
+            val listAsString = prefs[INTOLERANCES_FILTER] ?: ""
+            val listType = object : TypeToken<List<String>>() {}.type
+            val intolerances = Gson().fromJson<List<String>>(listAsString, listType)
+            intolerances ?: emptyList()
+        }
 
     suspend fun saveAllFilter(filterUiState: FilterUiState) {
         dataStore.edit {

@@ -75,7 +75,7 @@ fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit)
 
         IntoleranceFilter(
             intolerances = intolerances,
-            selectedIntolerances = filterUiState.intolerances.map { it.lowercase() }.toSet(),
+            selectedIntolerances = filterUiState.intolerances ?: emptyList(),
             onIntoleranceSelected = { intolerances ->
                 searchViewModel.updateFilterUiState(intolerances = intolerances)
             }

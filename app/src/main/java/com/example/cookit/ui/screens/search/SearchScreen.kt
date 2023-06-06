@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
+    modifier: Modifier = Modifier,
     modalSheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope,
     searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)

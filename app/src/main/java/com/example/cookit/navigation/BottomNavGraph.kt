@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -17,13 +15,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.cookit.R
 import com.example.cookit.ui.common.FilterScreen
-import com.example.cookit.ui.screens.SettingsScreen
+import com.example.cookit.ui.screens.SettingsItemScreen
 import com.example.cookit.ui.screens.favorite.FavoriteScreen
-import com.example.cookit.ui.screens.home.HomeScreen
+import com.example.cookit.ui.screens.home.HomeItemScreen
+import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.search.SearchScreen
 import com.example.cookit.ui.screens.search.SearchViewModel
 import com.example.cookit.utils.AppViewModelProvider
@@ -34,16 +31,24 @@ object BottomNavGraph : NavDestination {
     override val route: String = "bottom_nav"
 }
 
+sealed class BottomNavScreen(val route: String, val label: String, val iconID: Int) {
+    object Home : BottomNavScreen("home", "Home", R.drawable.ic_home)
+    object Search : BottomNavScreen("search", "Search", R.drawable.ic_search)
+    object Favorite : BottomNavScreen("favorite", "Favorite", R.drawable.ic_favorite)
+    object Settings : BottomNavScreen("settings", "Settings", R.drawable.ic_settings)
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CookItBottomNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun CookItBottomNavHost(modifier: Modifier = Modifier, navController: NavHostController) {
     val screens = listOf(
         BottomNavScreen.Home,
         BottomNavScreen.Search,
         BottomNavScreen.Favorite,
         BottomNavScreen.Settings
     )
-    val currentRoute = homeNavHostCurrentRoute(navController)
+
+    val currentRoute = remember { mutableStateOf(BottomNavScreen.Home.route) }
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -87,10 +92,10 @@ fun CookItBottomNavHost(navController: NavHostController, modifier: Modifier = M
 fun BottomNav(
     modifier: Modifier = Modifier,
     screens: List<BottomNavScreen>,
-    currentRoute: String?,
-    navController: NavHostController,
+    currentRoute: MutableState<String>,
     modalSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    navController: NavHostController
 ) {
 
     Scaffold(
@@ -110,7 +115,7 @@ fun BottomNav(
                 elevation = 4.dp,
             ) {
                 screens.forEach { screen ->
-                    val selected = currentRoute == screen.route
+                    val selected = currentRoute.value == screen.route
                     BottomNavigationItem(
                         icon = {
                             Icon(
@@ -123,43 +128,42 @@ fun BottomNav(
                         alwaysShowLabel = false,
                         selectedContentColor = MaterialTheme.colors.primaryVariant,
                         unselectedContentColor = Color.LightGray,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = currentRoute == screen.route
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+                        onClick = { currentRoute.value = screen.route }
                     )
                 }
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavScreen.Home.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(route = BottomNavScreen.Home.route) {
-                HomeScreen()
+        // Content of the selected screen
+        when (currentRoute.value) {
+            BottomNavScreen.Home.route -> {
+                HomeItemScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onItemSelected = { itemId ->
+                        RecipeDetailScreen.itemID = itemId
+                        val destination =
+                            "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
+                        navController.navigate(route = destination) {
+                            popUpTo(route = BottomNavGraph.route) {
+                                saveState = currentRoute.value == BottomNavScreen.Home.route
+                            }
+                            launchSingleTop = true
+                        }
+                    })
             }
-            composable(route = BottomNavScreen.Search.route) {
-                SearchScreen(modalSheetState = modalSheetState, coroutineScope = coroutineScope)
+            BottomNavScreen.Search.route -> {
+                SearchScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    modalSheetState = modalSheetState,
+                    coroutineScope = coroutineScope
+                )
             }
-            composable(route = BottomNavScreen.Favorite.route) {
-                FavoriteScreen()
+            BottomNavScreen.Favorite.route -> {
+                FavoriteScreen(modifier = Modifier.padding(innerPadding))
             }
-            composable(route = BottomNavScreen.Settings.route) {
-                SettingsScreen()
+            BottomNavScreen.Settings.route -> {
+                SettingsItemScreen(modifier = Modifier.padding(innerPadding))
             }
         }
     }
-}
-
-@Composable
-fun homeNavHostCurrentRoute(navController: NavHostController): String? {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
 }

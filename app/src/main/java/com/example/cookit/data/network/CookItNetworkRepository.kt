@@ -53,7 +53,7 @@ class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiServ
         apiKey: String,
         id: Long,
         includeNutrition: Boolean
-    ): Recipe = cookItApiService.getRecipeInfo(apiKey = apiKey, id = id, includeNutrition = false)
+    ): Recipe = cookItApiService.getRecipeInfo(apiKey = apiKey, id = id, includeNutrition = true)
 
     override suspend fun getRandomRecipes(
         apiKey: String,

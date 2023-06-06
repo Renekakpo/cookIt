@@ -24,8 +24,8 @@ interface CookItApiService {
     @Headers("Content-Type: application/json")
     @GET("recipes/{id}/information")
     suspend fun getRecipeInfo(
-        @Query("apiKey") apiKey: String,
         @Path("id") id: Long,
+        @Query("apiKey") apiKey: String,
         @Query("includeNutrition") includeNutrition: Boolean
     ): Recipe
 

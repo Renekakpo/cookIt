@@ -11,6 +11,8 @@ import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.utils.getFoodSuggestion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,13 +39,14 @@ class HomeViewModel(
     var homeUiState: HomeUiState by mutableStateOf(HomeUiState.Loading)
         private set
 
-    init {
-        getRandomRecipes(country = null)
-    }
+//    init {
+//        getRandomRecipes(country = null)
+//    }
 
     fun getRandomRecipes(country: String?) {
-        HomeUiState.Loading
-        viewModelScope.launch {
+        homeUiState = HomeUiState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
             homeUiState = try {
                 val foodSuggestion = getFoodSuggestion().let {
                     if (it.contains(" ")) it.substringAfterLast(" ") else it

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,31 +21,83 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.size.Scale
 import com.example.cookit.R
 import com.example.cookit.models.ExtendedIngredient
 import com.example.cookit.models.Recipe
-import com.example.cookit.models.recipe
 import com.example.cookit.navigation.NavDestination
+import com.example.cookit.ui.common.ErrorScreen
+import com.example.cookit.ui.common.LoadingScreen
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
+import com.example.cookit.utils.INGREDIENT_IMAGE_BASE_URL
+import com.example.cookit.utils.showMessage
 
-object RecipeDetailScreen: NavDestination {
+object RecipeDetailScreen : NavDestination {
     override val route: String = "recipe_info"
+    var itemID: Long? = null
 }
 
 @Composable
 fun RecipeDetailsScreen(
-    recipe: Recipe,
+    id: Long,
+    onBackClicked: () -> Unit,
+    navigateUp: () -> Unit,
+    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(id) { viewModel.getRecipeInfo(recipeId = id) }
+
+    when (val recipeUiState = viewModel.recipeInfoUiState) {
+        is RecipeInfoUiState.Loading -> {
+            LoadingScreen()
+        }
+
+        is RecipeInfoUiState.Success -> {
+            val recipe = recipeUiState.recipe
+
+            RecipeDetailsScreenContent(
+                onBackClicked = onBackClicked,
+                onLikeClicked = { viewModel.addRecipeToFavorite(newItem = recipe) },
+                onStartCookingClicked = { /* TODO: Display cooking instructions details */ },
+                navigateUp = navigateUp,
+                recipe = recipe
+            )
+        }
+
+        is RecipeInfoUiState.Updated -> {
+            showMessage(
+                context = context,
+                message = "Recipe data updated"
+            )
+        }
+
+        is RecipeInfoUiState.Error -> {
+            ErrorScreen(
+                errorMessage = stringResource(R.string.data_retrieving_error_message),
+                onRetry = { viewModel.getRecipeInfo(recipeId = id) }
+            )
+        }
+    }
+}
+
+@Composable
+fun RecipeDetailsScreenContent(
     onBackClicked: () -> Unit,
     onLikeClicked: () -> Unit,
     onStartCookingClicked: () -> Unit,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    recipe: Recipe
 ) {
     Column(
         modifier = Modifier
@@ -70,7 +123,7 @@ fun RecipeDetailsScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "Reciept",
+                text = stringResource(R.string.recipe_details_screen_title),
                 style = MaterialTheme.typography.h2,
                 modifier = Modifier.wrapContentSize(Alignment.Center),
             )
@@ -80,27 +133,40 @@ fun RecipeDetailsScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        AsyncImage(
-            model = ImageRequest.Builder(context = LocalContext.current)
-                .data(recipe.image)
-                .crossfade(enable = true)
-                .build(),
-            contentDescription = "Recipe image",
-            contentScale = ContentScale.Crop,
-            error = painterResource(id = R.drawable.ic_broken_image),
-            placeholder = painterResource(id = R.drawable.loading_img),
+        Card(
+            shape = MaterialTheme.shapes.medium,
+            elevation = 4.dp,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .aspectRatio(ratio = 1f, matchHeightConstraintsFirst = true)
-                .padding(start = 15.dp, end = 15.dp),
-        )
+                .background(color = Color.Transparent)
+                .padding(start = 15.dp, end = 15.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.Black.copy(alpha = 0.3f))
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(recipe.image)
+                        .crossfade(enable = true)
+                        .scale(Scale.FILL)
+                        .build(),
+                    contentDescription = "Recipe image",
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = R.drawable.ic_broken_image),
+                    placeholder = painterResource(id = R.drawable.loading_img),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(15.dp))
 
         Text(
-            text = "${recipe.title}",
-            style = MaterialTheme.typography.h4,
+            text = "${recipe.title?.replaceFirstChar { it.uppercase() }}",
+            style = MaterialTheme.typography.h6,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.SemiBold,
@@ -122,12 +188,12 @@ fun RecipeDetailsScreen(
             Row(
                 modifier = Modifier.padding(8.dp)
             ) {
-                Column (
+                Column(
                     modifier = Modifier.padding(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "${recipe.nutrition.caloricBreakdown?.percentFat?.toInt() ?: 0}%",
+                        text = "${recipe.nutrition?.caloricBreakdown?.percentFat?.toInt() ?: 0}%",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -144,12 +210,12 @@ fun RecipeDetailsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Column (
+                Column(
                     modifier = Modifier.padding(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "${recipe.nutrition.caloricBreakdown?.percentProtein?.toInt() ?: 0}%",
+                        text = "${recipe.nutrition?.caloricBreakdown?.percentProtein?.toInt() ?: 0}%",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -166,7 +232,7 @@ fun RecipeDetailsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Column (
+                Column(
                     modifier = Modifier.padding(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -188,12 +254,12 @@ fun RecipeDetailsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Column (
+                Column(
                     modifier = Modifier.padding(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "${recipe.cookingMinutes ?: 0}",
+                        text = "${recipe.readyInMinutes ?: 0}",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colors.primaryVariant
@@ -218,7 +284,7 @@ fun RecipeDetailsScreen(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(recipe.dishTypes ?: emptyList<String>()) { item ->
+            items(recipe.dishTypes ?: emptyList()) { item ->
                 Box(
                     modifier = Modifier
                         .background(
@@ -238,23 +304,23 @@ fun RecipeDetailsScreen(
                 Spacer(modifier = Modifier.size(10.dp))
             }
         }
-        
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Row(
-            modifier= Modifier.padding(start = 15.dp, end = 15.dp),
+            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Ingredients",
+                text = stringResource(R.string.ingredients_text),
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.SemiBold
             )
-            
+
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "${recipe.extendedIngredients.size} Item(s)",
+                text = stringResource(R.string.items_text, "${recipe.extendedIngredients.size}"),
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
@@ -274,10 +340,12 @@ fun RecipeDetailsScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp).background(color = Color.Transparent))
 
         Row(
-            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp, end = 10.dp, )
+            modifier = Modifier
+                .padding(start = 15.dp, bottom = 10.dp, end = 15.dp)
+                .background(color = Color.Transparent)
         ) {
             IconButton(
                 modifier = Modifier.background(
@@ -288,7 +356,7 @@ fun RecipeDetailsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.FavoriteBorder,
-                    contentDescription = "Add recipe to your favorite",
+                    contentDescription = stringResource(R.string.favorite_icon_description),
                     tint = Color.Black.copy(alpha = 0.4f)
                 )
             }
@@ -303,7 +371,7 @@ fun RecipeDetailsScreen(
                 shape = MaterialTheme.shapes.medium
             ) {
                 Text(
-                    text = "Start Cooking",
+                    text = stringResource(R.string.start_cooking_button_text),
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -326,23 +394,24 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 5.dp, end = 5.dp, bottom = 8.dp,)
+            .padding(start = 5.dp, end = 5.dp, bottom = 8.dp)
             .clickable { /* Do nothing */ }
     ) {
         Box(
             modifier = Modifier
                 .size(45.dp)
                 .background(
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f),
-                shape = MaterialTheme.shapes.medium),
+                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f),
+                    shape = MaterialTheme.shapes.medium
+                ),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(ingredient.image)
+                    .data("$INGREDIENT_IMAGE_BASE_URL${ingredient.image}")
                     .crossfade(true)
                     .build(),
-                contentDescription = "Ingredient image",
+                contentDescription = stringResource(R.string.ingredient_image_description),
                 contentScale = ContentScale.Crop,
                 error = painterResource(id = R.drawable.ic_broken_image),
                 placeholder = painterResource(id = R.drawable.loading_img),
@@ -369,7 +438,7 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
         Spacer(modifier = Modifier.width(15.dp))
 
         Text(
-            text = "${ingredient.measures["Us"]?.amount}${ingredient.measures["Us"]?.unitShort}",
+            text = "${ingredient.amount} ${ingredient.unit}",
             style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
@@ -382,10 +451,8 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
 fun RecipeDetailsScreenPreview() {
     CookItTheme {
         RecipeDetailsScreen(
-            recipe = recipe,
+            id = 0,
             onBackClicked = {},
-            onLikeClicked = {},
-            onStartCookingClicked = {},
             navigateUp = {},
         )
     }
