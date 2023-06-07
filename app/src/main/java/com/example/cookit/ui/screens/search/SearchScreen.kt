@@ -127,7 +127,7 @@ fun SearchScreenMainContainer(
             is SearchUiState.Success -> {
                 VerticalGridList(
                     items = searchUiState.recipes,
-                    onItemClicked = {
+                    onItemClicked = { recipe ->
                         // TODO: Display recipe info
                     }
                 )

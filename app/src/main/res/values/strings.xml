@@ -59,6 +59,7 @@
     <string name="ingredients_text">Ingredients</string>
     <string name="items_text">%s Item(s)</string>
     <string name="recipe_details_screen_title">Recipe</string>
+    <string name="instructions_text">Instructions</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

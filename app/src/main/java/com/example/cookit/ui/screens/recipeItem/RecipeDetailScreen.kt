@@ -2,18 +2,15 @@ package com.example.cookit.ui.screens.recipeItem
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,17 +31,69 @@ import coil.size.Scale
 import com.example.cookit.R
 import com.example.cookit.models.ExtendedIngredient
 import com.example.cookit.models.Recipe
+import com.example.cookit.models.Step
 import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.common.ErrorScreen
 import com.example.cookit.ui.common.LoadingScreen
-import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.INGREDIENT_IMAGE_BASE_URL
 import com.example.cookit.utils.showMessage
+import kotlinx.coroutines.launch
 
 object RecipeDetailScreen : NavDestination {
     override val route: String = "recipe_info"
     var itemID: Long? = null
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun RecipeDetailsScreenMainContainer(
+    id: Long,
+    onBackClicked: () -> Unit,
+    navigateUp: () -> Unit,
+    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val stepsState =
+        remember { mutableStateOf<List<Step>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true,
+    )
+
+    ModalBottomSheetLayout(
+        sheetState = modalSheetState,
+        sheetElevation = 8.dp,
+        sheetBackgroundColor = Color.White,
+        sheetShape = RoundedCornerShape(
+            topStart = 25.dp,
+            topEnd = 25.dp
+        ),
+        sheetContent = {
+            AnalyzedInstructionsSheet(
+                steps = stepsState.value,
+                closeBottomSheet = {
+                    coroutineScope.launch {
+                        if (modalSheetState.isVisible) {
+                            modalSheetState.hide()
+                        }
+                    }
+                }
+            )
+        }
+    ) {
+        RecipeDetailsScreen(
+            id = id,
+            onBackClicked = onBackClicked,
+            navigateUp = navigateUp,
+            onStartCookingClicked = { steps ->
+                stepsState.value = steps
+                coroutineScope.launch { modalSheetState.show() }
+            },
+            viewModel = viewModel
+        )
+    }
 }
 
 @Composable
@@ -52,6 +101,7 @@ fun RecipeDetailsScreen(
     id: Long,
     onBackClicked: () -> Unit,
     navigateUp: () -> Unit,
+    onStartCookingClicked: (List<Step>) -> Unit,
     viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val context = LocalContext.current
@@ -69,7 +119,7 @@ fun RecipeDetailsScreen(
             RecipeDetailsScreenContent(
                 onBackClicked = onBackClicked,
                 onLikeClicked = { viewModel.addRecipeToFavorite(newItem = recipe) },
-                onStartCookingClicked = { /* TODO: Display cooking instructions details */ },
+                onStartCookingClicked = onStartCookingClicked,
                 navigateUp = navigateUp,
                 recipe = recipe
             )
@@ -95,10 +145,12 @@ fun RecipeDetailsScreen(
 fun RecipeDetailsScreenContent(
     onBackClicked: () -> Unit,
     onLikeClicked: () -> Unit,
-    onStartCookingClicked: () -> Unit,
+    onStartCookingClicked: (List<Step>) -> Unit,
     navigateUp: () -> Unit,
     recipe: Recipe
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -340,7 +392,11 @@ fun RecipeDetailsScreenContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(5.dp).background(color = Color.Transparent))
+        Spacer(
+            modifier = Modifier
+                .height(5.dp)
+                .background(color = Color.Transparent)
+        )
 
         Row(
             modifier = Modifier
@@ -364,7 +420,13 @@ fun RecipeDetailsScreenContent(
             Spacer(modifier = Modifier.width(15.dp))
 
             Button(
-                onClick = onStartCookingClicked,
+                onClick = {
+                    if (recipe.analyzedInstructions.isNullOrEmpty()) {
+                        showMessage(context, "No instructions found")
+                    } else {
+                        onStartCookingClicked(recipe.analyzedInstructions.first().steps)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
@@ -446,14 +508,78 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
     }
 }
 
-@Preview
 @Composable
-fun RecipeDetailsScreenPreview() {
-    CookItTheme {
-        RecipeDetailsScreen(
-            id = 0,
-            onBackClicked = {},
-            navigateUp = {},
+fun AnalyzedInstructionsSheet(
+    steps: List<Step>,
+    closeBottomSheet: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .background(color = Color.Transparent)
+            .fillMaxWidth()
+            .padding(top = 5.dp, start = 15.dp, bottom = 15.dp, end = 15.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .width(50.dp)
+                .height(5.dp)
+                .background(color = Color.Gray, shape = MaterialTheme.shapes.medium)
+                .align(alignment = Alignment.CenterHorizontally)
+        ) {}
+
+        Text(
+            text = stringResource(R.string.instructions_text),
+            style = MaterialTheme.typography.h6,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(vertical = 15.dp, horizontal = 15.dp)
+        )
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            itemsIndexed(steps) { _, step ->
+                InstructionsItem(
+                    modifier = Modifier.heightIn(min = 48.dp),
+                    step = step
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InstructionsItem(modifier: Modifier, step: Step) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(
+                    color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "${step.number}",
+                style = MaterialTheme.typography.body1,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White
+            )
+        }
+
+        Text(
+            text = step.step,
+            color = Color.LightGray,
+            style = MaterialTheme.typography.subtitle1,
+            textAlign = TextAlign.Justify,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp)
+                .align(alignment = Alignment.CenterVertically)
         )
     }
 }

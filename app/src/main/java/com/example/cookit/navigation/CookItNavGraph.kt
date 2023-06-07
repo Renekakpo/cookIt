@@ -10,7 +10,7 @@ import androidx.navigation.navArgument
 import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
 import com.example.cookit.ui.screens.onboarding.OnboardingScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
-import com.example.cookit.ui.screens.recipeItem.RecipeDetailsScreen
+import com.example.cookit.ui.screens.recipeItem.RecipeDetailsScreenMainContainer
 import com.example.cookit.ui.screens.splash.SplashScreen
 
 @Composable
@@ -41,7 +41,7 @@ fun CookItMainNavHost(modifier: Modifier = Modifier, navHostController: NavHostC
         ) { navBackStackEntry ->
             val itemId = navBackStackEntry.arguments?.getLong("itemId")
             if (itemId != null) {
-                RecipeDetailsScreen(
+                RecipeDetailsScreenMainContainer(
                     id = itemId,
                     onBackClicked = { navHostController.popBackStack() },
                     navigateUp = { navHostController.navigateUp() }
