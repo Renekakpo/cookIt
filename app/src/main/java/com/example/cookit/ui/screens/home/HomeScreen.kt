@@ -40,10 +40,6 @@ fun HomeItemScreen(
 ) {
     val country = homeViewModel.homeFilterState.collectAsState(initial = null).value
 
-    LaunchedEffect(true) {
-        homeViewModel.getRandomRecipes(country = null)
-    }
-
     when (val homeUiState = homeViewModel.homeUiState) {
         is HomeUiState.Loading -> {
             LoadingScreen()
@@ -63,6 +59,10 @@ fun HomeItemScreen(
             )
         }
     }
+
+    LaunchedEffect(true) {
+        homeViewModel.getRandomRecipes(country = null)
+    }
 }
 
 @Composable
@@ -72,7 +72,6 @@ fun HomeContainer(
     homeViewModel: HomeViewModel,
     navigateToItemDetails: (Long) -> Unit
 ) {
-    val context = LocalContext.current
     val name = "Lorem"
     val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
     val randomRecipe = homeViewModel.randomRecipe.collectAsState().value

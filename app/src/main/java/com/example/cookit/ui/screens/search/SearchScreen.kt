@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cookit.R
+import com.example.cookit.models.Recipe
 import com.example.cookit.ui.common.*
 import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.AppViewModelProvider
@@ -24,39 +25,38 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    modalSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
+    onFilterClicked: () -> Unit,
+    onRecipeSelected: (Long) -> Unit,
     searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var filter by remember { mutableStateOf(FilterUiState()) }
 
-    LaunchedEffect(searchViewModel.filterUiState) {
-        val filterUiState = searchViewModel.filterUiState.first()
-        filter = filterUiState
-    }
-
     // Content of the main screen
     SearchScreenMainContainer(
-        modalBottomSheetState = modalSheetState,
-        coroutineScope = coroutineScope,
+        onFilterClicked = onFilterClicked,
         searchViewModel = searchViewModel,
         onQuerySubmit = { input ->
             searchViewModel.searchRecipe(
                 query = input,
                 filter = filter
             )
-        }
+        },
+        onRecipeSelected = onRecipeSelected
     )
+
+    LaunchedEffect(searchViewModel.filterUiState) {
+        val filterUiState = searchViewModel.filterUiState.first()
+        filter = filterUiState
+    }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreenMainContainer(
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope,
-    modalBottomSheetState: ModalBottomSheetState,
+    onFilterClicked: () -> Unit,
     onQuerySubmit: (String) -> Unit,
-    searchViewModel: SearchViewModel
+    searchViewModel: SearchViewModel,
+    onRecipeSelected: (Long) -> Unit
 ) {
     var queryChanged by remember { mutableStateOf("") }
 
@@ -90,9 +90,7 @@ fun SearchScreenMainContainer(
             query = queryChanged,
             onQueryChanged = { queryChanged = it },
             onQuerySubmit = onQuerySubmit,
-            onFilterClicked = {
-                coroutineScope.launch { modalBottomSheetState.show() }
-            }
+            onFilterClicked = onFilterClicked
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -127,27 +125,20 @@ fun SearchScreenMainContainer(
             is SearchUiState.Success -> {
                 VerticalGridList(
                     items = searchUiState.recipes,
-                    onItemClicked = { recipe ->
-                        // TODO: Display recipe info
-                    }
+                    onItemClicked = { recipe -> onRecipeSelected(recipe.id) }
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun SearchScreenPreview() {
     CookItTheme {
         SearchScreen(
-            modalSheetState = rememberModalBottomSheetState(
-                initialValue = ModalBottomSheetValue.Hidden,
-                confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-                skipHalfExpanded = true,
-            ),
-            coroutineScope = rememberCoroutineScope(),
+            onFilterClicked = {},
+            onRecipeSelected = {}
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cookit.ui.screens.recipeItem
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
@@ -106,7 +108,8 @@ fun RecipeDetailsScreen(
 ) {
     val context = LocalContext.current
 
-    LaunchedEffect(id) { viewModel.getRecipeInfo(recipeId = id) }
+    val localRecipeData: Recipe? by viewModel.localRecipeData.collectAsState()
+    var isFavorite by remember { mutableStateOf(localRecipeData != null) }
 
     when (val recipeUiState = viewModel.recipeInfoUiState) {
         is RecipeInfoUiState.Loading -> {
@@ -118,11 +121,26 @@ fun RecipeDetailsScreen(
 
             RecipeDetailsScreenContent(
                 onBackClicked = onBackClicked,
-                onLikeClicked = { viewModel.addRecipeToFavorite(newItem = recipe) },
+                onLikeClicked = {
+                    if (localRecipeData != null) {
+                        // Remove recipe from favorite
+                        viewModel.removeFromFavorite(item = localRecipeData!!)
+                        isFavorite = false
+                    } else {
+                        // Add recipe to favorite
+                        viewModel.addRecipeToFavorite(newItem = recipe)
+                        isFavorite = true
+                    }
+                },
                 onStartCookingClicked = onStartCookingClicked,
                 navigateUp = navigateUp,
-                recipe = recipe
+                recipe = recipe,
+                isFavorite = isFavorite
             )
+
+            if (localRecipeData != null) {
+                viewModel.updateFavoriteRecipeDetails(item = recipe)
+            }
         }
 
         is RecipeInfoUiState.Updated -> {
@@ -133,11 +151,31 @@ fun RecipeDetailsScreen(
         }
 
         is RecipeInfoUiState.Error -> {
-            ErrorScreen(
-                errorMessage = stringResource(R.string.data_retrieving_error_message),
-                onRetry = { viewModel.getRecipeInfo(recipeId = id) }
-            )
+            if (localRecipeData != null) {
+                RecipeDetailsScreenContent(
+                    onBackClicked = onBackClicked,
+                    onLikeClicked = {
+                        // Remove recipe from favorite
+                        viewModel.removeFromFavorite(item = localRecipeData!!)
+                        isFavorite = false
+                    },
+                    onStartCookingClicked = onStartCookingClicked,
+                    navigateUp = navigateUp,
+                    recipe = localRecipeData!!,
+                    isFavorite = isFavorite
+                )
+            } else {
+                ErrorScreen(
+                    errorMessage = stringResource(R.string.data_retrieving_error_message),
+                    onRetry = { viewModel.getRecipeInfo(recipeId = id) }
+                )
+            }
         }
+    }
+
+    LaunchedEffect(id) {
+        viewModel.getRecipeInfo(recipeId = id)
+        viewModel.isFavoriteRecipe(recipeId = id)
     }
 }
 
@@ -147,7 +185,8 @@ fun RecipeDetailsScreenContent(
     onLikeClicked: () -> Unit,
     onStartCookingClicked: (List<Step>) -> Unit,
     navigateUp: () -> Unit,
-    recipe: Recipe
+    recipe: Recipe,
+    isFavorite: Boolean
 ) {
     val context = LocalContext.current
 
@@ -411,9 +450,9 @@ fun RecipeDetailsScreenContent(
                 onClick = onLikeClicked
             ) {
                 Icon(
-                    imageVector = Icons.Filled.FavoriteBorder,
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = stringResource(R.string.favorite_icon_description),
-                    tint = Color.Black.copy(alpha = 0.4f)
+                    tint = if (isFavorite) Color.Red.copy(alpha = 0.4f) else Color.Black.copy(alpha = 0.4f)
                 )
             }
 
@@ -515,7 +554,6 @@ fun AnalyzedInstructionsSheet(
 ) {
     Column(
         modifier = Modifier
-            .background(color = Color.Transparent)
             .fillMaxWidth()
             .padding(top = 5.dp, start = 15.dp, bottom = 15.dp, end = 15.dp)
     ) {
@@ -573,7 +611,7 @@ fun InstructionsItem(modifier: Modifier, step: Step) {
 
         Text(
             text = step.step,
-            color = Color.LightGray,
+            color = Color.DarkGray,
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Justify,
             modifier = Modifier

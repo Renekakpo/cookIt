@@ -17,14 +17,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.cookit.R
 import com.example.cookit.ui.common.FilterScreen
-import com.example.cookit.ui.screens.SettingsItemScreen
 import com.example.cookit.ui.screens.favorite.FavoriteScreen
 import com.example.cookit.ui.screens.home.HomeItemScreen
 import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.search.SearchScreen
 import com.example.cookit.ui.screens.search.SearchViewModel
+import com.example.cookit.ui.screens.settings.SettingsItemScreen
 import com.example.cookit.utils.AppViewModelProvider
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 object BottomNavGraph : NavDestination {
@@ -81,8 +80,7 @@ fun CookItBottomNavHost(modifier: Modifier = Modifier, navController: NavHostCon
             screens = screens,
             currentRoute = currentRoute,
             navController = navController,
-            modalSheetState = modalSheetState,
-            coroutineScope = coroutineScope
+            onFilterClicked = { coroutineScope.launch { modalSheetState.show() } }
         )
     }
 }
@@ -93,8 +91,7 @@ fun BottomNav(
     modifier: Modifier = Modifier,
     screens: List<BottomNavScreen>,
     currentRoute: MutableState<String>,
-    modalSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
+    onFilterClicked: () -> Unit,
     navController: NavHostController
 ) {
 
@@ -139,8 +136,8 @@ fun BottomNav(
             BottomNavScreen.Home.route -> {
                 HomeItemScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onItemSelected = { itemId ->
-                        RecipeDetailScreen.itemID = itemId
+                    onItemSelected = { recipeId ->
+                        RecipeDetailScreen.itemID = recipeId
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
@@ -154,12 +151,35 @@ fun BottomNav(
             BottomNavScreen.Search.route -> {
                 SearchScreen(
                     modifier = Modifier.padding(innerPadding),
-                    modalSheetState = modalSheetState,
-                    coroutineScope = coroutineScope
+                    onFilterClicked = onFilterClicked,
+                    onRecipeSelected = { recipeId ->
+                        RecipeDetailScreen.itemID = recipeId
+                        val destination =
+                            "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
+                        navController.navigate(route = destination) {
+                            popUpTo(route = BottomNavGraph.route) {
+                                saveState = currentRoute.value == BottomNavScreen.Home.route
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             BottomNavScreen.Favorite.route -> {
-                FavoriteScreen(modifier = Modifier.padding(innerPadding))
+                FavoriteScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onRecipeSelected = { recipeId ->
+                        RecipeDetailScreen.itemID = recipeId
+                        val destination =
+                            "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
+                        navController.navigate(route = destination) {
+                            popUpTo(route = BottomNavGraph.route) {
+                                saveState = currentRoute.value == BottomNavScreen.Home.route
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             BottomNavScreen.Settings.route -> {
                 SettingsItemScreen(modifier = Modifier.padding(innerPadding))

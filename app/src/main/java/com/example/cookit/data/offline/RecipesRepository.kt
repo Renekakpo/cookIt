@@ -17,7 +17,7 @@ interface RecipesRepository {
     /**
      * Retrieve an item from the given data source that matches with the [id].
      */
-    fun getItemStream(id: Int): Flow<Recipe?>
+    fun  getItemStream(id: Long): Recipe?
 
     /**
      * Insert item in the data source
@@ -43,7 +43,7 @@ interface RecipesRepository {
 class OfflineRecipeRepository(private val recipeDao: RecipeDao): RecipesRepository {
     override fun getAllItemsStream(): Flow<List<Recipe>> = recipeDao.getAllItems()
 
-    override fun getItemStream(id: Int): Flow<Recipe?> = recipeDao.getItem(id)
+    override fun getItemStream(id: Long): Recipe? = recipeDao.getItem(id)
 
     override suspend fun insertItem(recipe: Recipe) = recipeDao.insert(recipe)
 

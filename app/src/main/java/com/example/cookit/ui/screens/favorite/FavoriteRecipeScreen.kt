@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,14 +19,13 @@ import com.example.cookit.R
 import com.example.cookit.ui.common.VerticalGridList
 import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.AppViewModelProvider
-import com.example.cookit.utils.showMessage
 
 @Composable
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
+    onRecipeSelected: (Long) -> Unit,
     favoriteRecipeViewModel: FavoriteRecipeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val context = LocalContext.current
     val favoriteRecipeList by favoriteRecipeViewModel.favoriteRecipeUiState.collectAsState()
 
     Column(
@@ -70,7 +68,7 @@ fun FavoriteScreen(
         } else {
             VerticalGridList(
                 items = favoriteRecipeList.favorites,
-                onItemClicked = { showMessage(context, "Recipe clicked: ${it.title}") }
+                onItemClicked = { recipe -> onRecipeSelected(recipe.id) }
             )
         }
     }
@@ -80,6 +78,6 @@ fun FavoriteScreen(
 @Composable
 fun FavoriteScreenPreview() {
     CookItTheme {
-        FavoriteScreen()
+        FavoriteScreen(onRecipeSelected = {})
     }
 }
