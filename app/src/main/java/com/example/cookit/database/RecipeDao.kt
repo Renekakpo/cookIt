@@ -16,8 +16,8 @@ interface RecipeDao {
     @Update
     suspend fun update(recipe: Recipe)
 
-    @Delete
-    suspend fun delete(recipe: Recipe)
+    @Query("DELETE FROM $RECIPE_TABLE_NAME WHERE id = :id")
+    suspend fun delete(id: Long)
 
     @Query("SELECT * FROM $RECIPE_TABLE_NAME WHERE id = :id")
     fun getItem(id: Long): Recipe?

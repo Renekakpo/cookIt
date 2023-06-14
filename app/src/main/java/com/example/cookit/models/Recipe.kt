@@ -1,6 +1,7 @@
 package com.example.cookit.models
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.cookit.models.converters.AnalyzedInstructionsConverters
@@ -12,7 +13,7 @@ import kotlinx.serialization.Serializable
 /**
  * Entity data class represents a single row in the database.
  */
-@Entity(tableName = RECIPE_TABLE_NAME)
+@Entity(tableName = RECIPE_TABLE_NAME, indices = [Index(value = ["id"], unique = true)])
 @Serializable
 data class Recipe(
     @PrimaryKey(autoGenerate = true)

@@ -11,12 +11,13 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.F
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -27,23 +28,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cookit.BuildConfig
 import com.example.cookit.R
-import com.example.cookit.ui.screens.recipeItem.AnalyzedInstructionsSheet
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SettingsItemScreen(modifier: Modifier = Modifier) {
+fun SettingsItemScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true,
     )
+    val favoriteItemCount: Int by viewModel.getCountOfItems().collectAsState(initial = 0)
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -59,7 +65,7 @@ fun SettingsItemScreen(modifier: Modifier = Modifier) {
     ) {
         SettingsMenuMainContainer(
             modifier = modifier,
-            favoriteItemCount = 0,
+            favoriteItemCount = favoriteItemCount,
             cookedDataCount = 0,
             onInfoClick = {
                 coroutineScope.launch { modalSheetState.show() }
@@ -176,7 +182,7 @@ fun SettingsMenuMainContainer(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Total Favorites",
+                    text = stringResource(R.string.total_favorites_text),
                     color = colors.onBackground.copy(alpha = 0.5f),
                     modifier = Modifier.padding(5.dp)
                 )
@@ -204,7 +210,7 @@ fun SettingsMenuMainContainer(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Total Cooked",
+                    text = stringResource(R.string.total_cooked_text),
                     color = colors.onBackground.copy(alpha = 0.5f),
                     modifier = Modifier.padding(5.dp)
                 )
@@ -226,11 +232,13 @@ fun AppInfoSheet() {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val halfScreenHeight: Dp = screenHeight / 2
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .height(halfScreenHeight)
-        .padding(horizontal = 30.dp, vertical = 5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(halfScreenHeight)
+            .padding(horizontal = 30.dp, vertical = 5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier
                 .width(50.dp)

@@ -8,6 +8,7 @@ import com.example.cookit.ui.screens.home.HomeViewModel
 import com.example.cookit.ui.screens.onboarding.OnboardingViewModel
 import com.example.cookit.ui.screens.recipeItem.RecipeInfoViewModel
 import com.example.cookit.ui.screens.search.SearchViewModel
+import com.example.cookit.ui.screens.settings.SettingsViewModel
 import com.example.cookit.ui.screens.splash.SplashViewModel
 
 object AppViewModelProvider {
@@ -55,6 +56,12 @@ object AppViewModelProvider {
         initializer {
             val recipeRepository = cookItApplication().offlineDataContainer.recipesRepository
             FavoriteRecipeViewModel(recipeRepository = recipeRepository)
+        }
+
+        // Initializer for SettingsViewModel
+        initializer {
+            val recipeRepository = cookItApplication().offlineDataContainer.recipesRepository
+            SettingsViewModel(recipeRepository = recipeRepository)
         }
     }
 }

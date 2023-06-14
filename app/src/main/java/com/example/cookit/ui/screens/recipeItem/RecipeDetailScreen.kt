@@ -1,6 +1,5 @@
 package com.example.cookit.ui.screens.recipeItem
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -51,7 +50,6 @@ object RecipeDetailScreen : NavDestination {
 @Composable
 fun RecipeDetailsScreenMainContainer(
     id: Long,
-    onBackClicked: () -> Unit,
     navigateUp: () -> Unit,
     viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -74,20 +72,12 @@ fun RecipeDetailsScreenMainContainer(
         ),
         sheetContent = {
             AnalyzedInstructionsSheet(
-                steps = stepsState.value,
-                closeBottomSheet = {
-                    coroutineScope.launch {
-                        if (modalSheetState.isVisible) {
-                            modalSheetState.hide()
-                        }
-                    }
-                }
+                steps = stepsState.value
             )
         }
     ) {
         RecipeDetailsScreen(
             id = id,
-            onBackClicked = onBackClicked,
             navigateUp = navigateUp,
             onStartCookingClicked = { steps ->
                 stepsState.value = steps
@@ -101,7 +91,6 @@ fun RecipeDetailsScreenMainContainer(
 @Composable
 fun RecipeDetailsScreen(
     id: Long,
-    onBackClicked: () -> Unit,
     navigateUp: () -> Unit,
     onStartCookingClicked: (List<Step>) -> Unit,
     viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -109,86 +98,82 @@ fun RecipeDetailsScreen(
     val context = LocalContext.current
 
     val localRecipeData: Recipe? by viewModel.localRecipeData.collectAsState()
-    var isFavorite by remember { mutableStateOf(localRecipeData != null) }
+    val addedToFavoriteRecipes: Boolean by viewModel.addedToFavorite.collectAsState()
 
-    when (val recipeUiState = viewModel.recipeInfoUiState) {
-        is RecipeInfoUiState.Loading -> {
+    when (val recipeUiState = viewModel.recipeDetailsUiState) {
+        is RecipeDetailsUiState.Loading -> {
             LoadingScreen()
         }
 
-        is RecipeInfoUiState.Success -> {
+        is RecipeDetailsUiState.Success -> {
             val recipe = recipeUiState.recipe
 
             RecipeDetailsScreenContent(
-                onBackClicked = onBackClicked,
-                onLikeClicked = {
-                    if (localRecipeData != null) {
-                        // Remove recipe from favorite
-                        viewModel.removeFromFavorite(item = localRecipeData!!)
-                        isFavorite = false
-                    } else {
-                        // Add recipe to favorite
-                        viewModel.addRecipeToFavorite(newItem = recipe)
-                        isFavorite = true
-                    }
+                onLikeClicked = { state ->
+                    viewModel.updateFavoriteDataState(
+                        isFavorite = state,
+                        recipe = recipe
+                    )
                 },
                 onStartCookingClicked = onStartCookingClicked,
                 navigateUp = navigateUp,
                 recipe = recipe,
-                isFavorite = isFavorite
+                addedToFavoriteRecipes = addedToFavoriteRecipes
             )
 
-            if (localRecipeData != null) {
+            if (addedToFavoriteRecipes) {
                 viewModel.updateFavoriteRecipeDetails(item = recipe)
             }
         }
 
-        is RecipeInfoUiState.Updated -> {
+        is RecipeDetailsUiState.Updated -> {
             showMessage(
                 context = context,
                 message = "Recipe data updated"
             )
         }
 
-        is RecipeInfoUiState.Error -> {
+        is RecipeDetailsUiState.Error -> {
             if (localRecipeData != null) {
                 RecipeDetailsScreenContent(
-                    onBackClicked = onBackClicked,
-                    onLikeClicked = {
-                        // Remove recipe from favorite
-                        viewModel.removeFromFavorite(item = localRecipeData!!)
-                        isFavorite = false
+                    onLikeClicked = { state ->
+                        viewModel.updateFavoriteDataState(
+                            isFavorite = state,
+                            recipe = localRecipeData!!
+                        )
                     },
                     onStartCookingClicked = onStartCookingClicked,
                     navigateUp = navigateUp,
                     recipe = localRecipeData!!,
-                    isFavorite = isFavorite
+                    addedToFavoriteRecipes = true
                 )
             } else {
                 ErrorScreen(
                     errorMessage = stringResource(R.string.data_retrieving_error_message),
-                    onRetry = { viewModel.getRecipeInfo(recipeId = id) }
+                    onRetry = { viewModel.getNetworkRecipeDetails(recipeId = id) }
                 )
             }
         }
     }
 
     LaunchedEffect(id) {
-        viewModel.getRecipeInfo(recipeId = id)
         viewModel.isFavoriteRecipe(recipeId = id)
+        viewModel.getNetworkRecipeDetails(recipeId = id)
+        viewModel.getLocalRecipeDetails(recipeId = id)
     }
 }
 
 @Composable
 fun RecipeDetailsScreenContent(
-    onBackClicked: () -> Unit,
-    onLikeClicked: () -> Unit,
+    onLikeClicked: (Boolean) -> Unit,
     onStartCookingClicked: (List<Step>) -> Unit,
     navigateUp: () -> Unit,
     recipe: Recipe,
-    isFavorite: Boolean
+    addedToFavoriteRecipes: Boolean = false
 ) {
     val context = LocalContext.current
+
+    var isFavorite by remember { mutableStateOf(addedToFavoriteRecipes) }
 
     Column(
         modifier = Modifier
@@ -208,7 +193,7 @@ fun RecipeDetailsScreenContent(
                 tint = MaterialTheme.colors.onBackground,
                 modifier = Modifier
                     .size(25.dp)
-                    .clickable { onBackClicked() }
+                    .clickable { navigateUp() }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -447,7 +432,10 @@ fun RecipeDetailsScreenContent(
                     color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f),
                     shape = MaterialTheme.shapes.medium
                 ),
-                onClick = onLikeClicked
+                onClick = {
+                    isFavorite = !isFavorite
+                    onLikeClicked(isFavorite)
+                }
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
@@ -549,8 +537,7 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
 
 @Composable
 fun AnalyzedInstructionsSheet(
-    steps: List<Step>,
-    closeBottomSheet: () -> Unit
+    steps: List<Step>
 ) {
     Column(
         modifier = Modifier
@@ -596,7 +583,7 @@ fun InstructionsItem(modifier: Modifier, step: Step) {
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
+                    color = MaterialTheme.colors.primary,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center

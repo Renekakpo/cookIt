@@ -30,9 +30,9 @@ interface RecipesRepository {
     suspend fun insertItems(recipes: List<Recipe>)
 
     /**
-     * Delete item from the data source
+     * Delete item from the data source base on its id
      */
-    suspend fun deleteItem(recipe: Recipe)
+    suspend fun deleteItem(id: Long)
 
     /**
      * Update item in the data source
@@ -49,7 +49,7 @@ class OfflineRecipeRepository(private val recipeDao: RecipeDao): RecipesReposito
 
     override suspend fun insertItems(recipes: List<Recipe>) = recipeDao.insertMultipleRecipes(recipes)
 
-    override suspend fun deleteItem(recipe: Recipe) = recipeDao.delete(recipe)
+    override suspend fun deleteItem(id: Long) = recipeDao.delete(id)
 
     override suspend fun updateItem(recipe: Recipe) = recipeDao.update(recipe)
 }

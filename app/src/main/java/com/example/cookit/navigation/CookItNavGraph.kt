@@ -43,7 +43,6 @@ fun CookItMainNavHost(modifier: Modifier = Modifier, navHostController: NavHostC
             if (itemId != null) {
                 RecipeDetailsScreenMainContainer(
                     id = itemId,
-                    onBackClicked = { navHostController.popBackStack() },
                     navigateUp = { navHostController.navigateUp() }
                 )
             } else {
