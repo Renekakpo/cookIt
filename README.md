@@ -34,7 +34,7 @@ Getting Started
 
 Screenshots
 ------------------------------------------
-![Screenshot](./screenshots/rsz_cookit_splash_screen.png)
+![Screenshot](./screenshots/cookit_splash_screen.png)
 ![Screenshot](./screenshots/onboarding_page_1.png)
 ![Screenshot](./screenshots/onboarding_last_page.png)
 ![Screenshot](./screenshots/cookit_homescreen.png)
