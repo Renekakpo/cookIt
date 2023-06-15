@@ -49,7 +49,8 @@ fun SettingsItemScreen(
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true,
     )
-    val favoriteItemCount: Int by viewModel.getCountOfItems().collectAsState(initial = 0)
+    val favoriteItemCount: Int by viewModel.getFavoriteRecipesCount().collectAsState(initial = 0)
+    val cookedCount: Long by viewModel.getCookedRecipesCount().collectAsState(initial = 0)
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -66,7 +67,7 @@ fun SettingsItemScreen(
         SettingsMenuMainContainer(
             modifier = modifier,
             favoriteItemCount = favoriteItemCount,
-            cookedDataCount = 0,
+            cookedDataCount = cookedCount,
             onInfoClick = {
                 coroutineScope.launch { modalSheetState.show() }
             },
@@ -79,8 +80,8 @@ fun SettingsItemScreen(
 @Composable
 fun SettingsMenuMainContainer(
     modifier: Modifier = Modifier,
-    favoriteItemCount: Int = 0,
-    cookedDataCount: Int = 0,
+    favoriteItemCount: Int,
+    cookedDataCount: Long,
     onInfoClick: () -> Unit = {},
     onGitHubClick: () -> Unit = {}
 ) {

@@ -34,7 +34,14 @@ Getting Started
 
 Screenshots
 ------------------------------------------
-`Cooming soon`
+![Screenshot](./screenshots/cookit_splash_screen.png)
+![Screenshot](./screenshots/onboarding_page_1.png)
+![Screenshot](./screenshots/onboarding_last_page.png)
+![Screenshot](./screenshots/cookit_homescreen.png)
+![Screenshot](./screenshots/cookit_searchscreen.png)
+![Screenshot](./screenshots/favorite_recipes_screen.png)
+![Screenshot](./screenshots/recipe_details_screen.png)
+![Screenshot](./screenshots/recipe_instructions_screen.png)
 
 Credits
 ------------------------------------------

@@ -66,6 +66,11 @@
     <string name="version_name_text">Version %s</string>
     <string name="total_favorites_text">Total Favorites</string>
     <string name="total_cooked_text">Total Cooked</string>
+    <string name="recipe_picture_text">Recipe image</string>
+    <string name="fat_text">Fat</string>
+    <string name="proteins_text">Proteins</string>
+    <string name="servings_text">Servings</string>
+    <string name="minutes_text">Minutes</string>
     <string-array name="cuisine">
         <item>African</item>
         <item>American</item>

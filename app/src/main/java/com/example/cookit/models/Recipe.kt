@@ -63,7 +63,8 @@ data class Recipe(
     @TypeConverters(ExtendedIngredient::class)
     val extendedIngredients: List<ExtendedIngredient> = emptyList(),
     @TypeConverters(Nutrition::class)
-    val nutrition: Nutrition? = null
+    val nutrition: Nutrition? = null,
+    var cooked: Boolean = false
 )
 
 @Serializable

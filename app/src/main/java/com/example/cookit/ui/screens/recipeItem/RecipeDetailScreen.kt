@@ -82,6 +82,7 @@ fun RecipeDetailsScreenMainContainer(
             onStartCookingClicked = { steps ->
                 stepsState.value = steps
                 coroutineScope.launch { modalSheetState.show() }
+                viewModel.incrementCookedCount()
             },
             viewModel = viewModel
         )
@@ -227,7 +228,7 @@ fun RecipeDetailsScreenContent(
                         .crossfade(enable = true)
                         .scale(Scale.FILL)
                         .build(),
-                    contentDescription = "Recipe image",
+                    contentDescription = stringResource(R.string.recipe_picture_text),
                     contentScale = ContentScale.Crop,
                     error = painterResource(id = R.drawable.ic_broken_image),
                     placeholder = painterResource(id = R.drawable.loading_img),
@@ -278,7 +279,7 @@ fun RecipeDetailsScreenContent(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Fat",
+                        text = stringResource(R.string.fat_text),
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -300,7 +301,7 @@ fun RecipeDetailsScreenContent(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Proteins",
+                        text = stringResource(R.string.proteins_text),
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -322,7 +323,7 @@ fun RecipeDetailsScreenContent(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Servings",
+                        text = stringResource(R.string.servings_text),
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )
@@ -344,7 +345,7 @@ fun RecipeDetailsScreenContent(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Minutes",
+                        text = stringResource(R.string.minutes_text),
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black.copy(alpha = 0.4f)
                     )

@@ -49,7 +49,12 @@ object AppViewModelProvider {
         initializer {
             val networkRepository = cookItApplication().networkDataContainer.cookItNetworkRepository
             val recipesRepository = cookItApplication().offlineDataContainer.recipesRepository
-            RecipeInfoViewModel(networkRepository = networkRepository, localDataSource = recipesRepository)
+            val dataStoreRepos = cookItApplication().cookItDataStore
+            RecipeInfoViewModel(
+                networkRepository = networkRepository,
+                localDataSource = recipesRepository,
+                localDataStore = dataStoreRepos
+            )
         }
 
         // Initializer for FavoriteRecipeViewModel
@@ -61,7 +66,8 @@ object AppViewModelProvider {
         // Initializer for SettingsViewModel
         initializer {
             val recipeRepository = cookItApplication().offlineDataContainer.recipesRepository
-            SettingsViewModel(recipeRepository = recipeRepository)
+            val dataStoreRepos = cookItApplication().cookItDataStore
+            SettingsViewModel(recipeRepository = recipeRepository, localDataStore = dataStoreRepos)
         }
     }
 }

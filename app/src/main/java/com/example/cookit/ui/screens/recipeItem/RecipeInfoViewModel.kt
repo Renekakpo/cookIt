@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cookit.data.network.CookItNetworkRepository
 import com.example.cookit.data.offline.RecipesRepository
+import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.Recipe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ sealed interface RecipeDetailsUiState {
 
 class RecipeInfoViewModel(
     private val networkRepository: CookItNetworkRepository,
-    private val localDataSource: RecipesRepository
+    private val localDataSource: RecipesRepository,
+    private val localDataStore: CookItDataStoreRepository,
 ) : ViewModel() {
 
     var recipeDetailsUiState: RecipeDetailsUiState by mutableStateOf(RecipeDetailsUiState.Loading)
@@ -110,6 +112,16 @@ class RecipeInfoViewModel(
 
             } catch (e: Exception) {
                 Log.d("updateFavoriteDataState", "${e.message}")
+            }
+        }
+    }
+
+    fun incrementCookedCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                localDataStore.updateCookedCount()
+            } catch (e: Exception) {
+                Log.d("incrementCookedCount", "${e.message}")
             }
         }
     }

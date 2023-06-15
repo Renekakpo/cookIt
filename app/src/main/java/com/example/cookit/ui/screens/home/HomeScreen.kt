@@ -72,7 +72,7 @@ fun HomeContainer(
     homeViewModel: HomeViewModel,
     navigateToItemDetails: (Long) -> Unit
 ) {
-    val name = "Lorem"
+    val name = ""
     val cuisines = stringArrayResource(id = R.array.cuisine).sorted()
     val randomRecipe = homeViewModel.randomRecipe.collectAsState().value
 
@@ -111,13 +111,13 @@ fun HomeContainer(
 
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data("https://pbs.twimg.com/media/Fj31UzPWYAAXzzO?format=jpg&name=large")
+                    .data("")
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(R.string.user_profile_picture_description),
                 contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.ic_broken_image),
-                placeholder = painterResource(id = R.drawable.loading_img),
+                error = painterResource(id = R.drawable.user_profile_placeholder),
+                placeholder = painterResource(id = R.drawable.user_profile_placeholder),
                 modifier = Modifier
                     .weight(1f)
                     .size(50.dp)

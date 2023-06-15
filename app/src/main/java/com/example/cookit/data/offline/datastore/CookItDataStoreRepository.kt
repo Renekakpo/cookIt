@@ -110,6 +110,23 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
+    val cookedRecipesCount: Flow<Long> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.d(TAG, "Error reading preferences", it)
+                emit(value = emptyPreferences())
+            } else {
+                throw it
+            }
+        }.map { prefs -> prefs[RECIPE_COOKED_COUNT] ?: 0 }
+
+    suspend fun updateCookedCount() {
+        dataStore.edit {
+            val prevCount = it[RECIPE_COOKED_COUNT] ?: 0
+            it[RECIPE_COOKED_COUNT] =  prevCount.inc()
+        }
+    }
+
     private companion object {
         val TAG: String = CookItDataStoreRepository::class.java.simpleName
         val ON_BOARDING_COMPLETED = booleanPreferencesKey(name = "onBoarding_completed")
@@ -118,5 +135,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
         val MEAL_TYPE_FILTER = stringPreferencesKey(name = "meal_type_filter")
         val DIET_FILTER = stringPreferencesKey(name = "diet_filter")
         val INTOLERANCES_FILTER = stringPreferencesKey(name = "intolerances_filter")
+        val RECIPE_COOKED_COUNT = longPreferencesKey(name = "recipe_cooked_count")
     }
 }

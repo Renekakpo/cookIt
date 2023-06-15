@@ -2,7 +2,6 @@ package com.example.cookit.utils
 
 import android.content.Context
 import android.widget.Toast
-import java.time.LocalTime
 import java.util.*
 
 fun getGreetingText(username: String): String {
@@ -12,7 +11,8 @@ fun getGreetingText(username: String): String {
         in 12..15 -> "Afternoon"
         else -> "Evening"
     }
-    return "Good $timeString, $username!"
+
+    return if (username.isNotEmpty()) "Good $timeString, $username!" else "Good $timeString!"
 }
 
 fun getFoodSuggestion(): String {
