@@ -32,12 +32,15 @@ import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.theme.CookItTheme
 import com.example.cookit.utils.AppViewModelProvider
 
-object LoginRegistrationScreen: NavDestination {
+object LoginRegistrationScreen : NavDestination {
     override val route: String = "authentication_screen"
 }
 
 @Composable
-fun LoginRegistrationScreen(navController: NavController, viewModel: LoginRegistrationViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun LoginRegistrationScreen(
+    navController: NavController,
+    viewModel: LoginRegistrationViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     var emailState by rememberSaveable { mutableStateOf("") }
     var passwordState by rememberSaveable { mutableStateOf("") }
     var confirmPasswordState by rememberSaveable { mutableStateOf("") }
@@ -273,7 +276,10 @@ fun LoginRegistrationScreen(navController: NavController, viewModel: LoginRegist
     }
 }
 
-private fun onAuthButtonClicked(navController: NavController, viewModel: LoginRegistrationViewModel) {
+private fun onAuthButtonClicked(
+    navController: NavController,
+    viewModel: LoginRegistrationViewModel
+) {
     viewModel.saveLoginCompletionState(isCompleted = true)
     navController.navigate(route = BottomNavGraph.route)
 }
