@@ -161,7 +161,7 @@ fun CircularButton(text: String, onClick: () -> Unit) {
         if (text == stringResource(id = R.string.next_button_text)) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow),
-                contentDescription = null,
+                contentDescription = stringResource(id = R.string.next_button_text),
                 tint = MaterialTheme.colors.background,
                 modifier = Modifier
                     .size(25.dp)
