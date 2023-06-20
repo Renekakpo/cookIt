@@ -2,18 +2,17 @@ package com.example.cookit
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cookit.models.onboardingPages
+import com.example.cookit.navigation.BottomNavGraph
+import com.example.cookit.navigation.CookItBottomNavHost
 import com.example.cookit.navigation.CookItMainNavHost
 import com.example.cookit.ui.CookItApp
 import com.example.cookit.ui.screens.auth.LoginRegistrationScreen
@@ -133,4 +132,54 @@ class CookItUITests {
         }
         assertEquals(LoginRegistrationScreen.route, currentDestination)
     }
+
+    @Test
+    fun loginRegistrationScreen_to_bottomNavHost_navigationTest() = runBlocking {
+        var navController: NavHostController? = null
+
+        composeTestRule.setContent {
+            navController = rememberNavController()
+
+            NavHost(navController = navController!!, startDestination = LoginRegistrationScreen.route) {
+                composable(route = LoginRegistrationScreen.route) {
+                    CookItTheme {
+                        LoginRegistrationScreen(navController = navController!!)
+                    }
+                }
+                composable(route = BottomNavGraph.route) {
+                    CookItTheme {
+                        CookItBottomNavHost(navController = navController!!)
+                    }
+                }
+                // Define other destinations
+            }
+        }
+
+        // Find the email and password text fields
+        val emailLabel = composeTestRule.activity.getString(R.string.email_text)
+        val passwordLabel = composeTestRule.activity.getString(R.string.password_text)
+
+        // Perform text input in the email field
+        composeTestRule.onNode(hasText(emailLabel))
+            .performTextInput("example@example.com")
+
+        // Perform text input in the password field
+        composeTestRule.onNode(hasText(passwordLabel))
+            .performTextInput("password123")
+
+        // Perform the navigation to the BottomNavGraph
+        composeTestRule.runOnIdle {
+            navController?.navigate(BottomNavGraph.route)
+        }
+
+        // Wait for the navigation to complete
+        composeTestRule.waitForIdle()
+
+        // Assert that the navigation to BottomNavGraph occurred
+        val currentDestination = composeTestRule.runOnIdle {
+            navController?.currentDestination?.route
+        }
+        assertEquals(BottomNavGraph.route, currentDestination)
+    }
+
 }
