@@ -34,18 +34,18 @@ Getting Started
 
 Screenshots
 ------------------------------------------
-<img src="./screenshots/screenshot_splashscreen.png" alt="Splash Screen" width="200" height="400" />
-![Screenshot](./screenshots/screenshot_onboarding_start.png)
-![Screenshot](./screenshots/screenshot_onboarding_end.png)
-![Screenshot](./screenshots/screenshot_signinscreen.png)
-![Screenshot](./screenshots/screenshot_signupscreen.png)
-![Screenshot](./screenshots/screenshot_homescreen.png)
-![Screenshot](./screenshots/screenshot_recipedetails.png)
-![Screenshot](./screenshots/screenshot_search_filter.png)
-![Screenshot](./screenshots/screenshot_instructions.png)
-![Screenshot](./screenshots/screenshot_favoritescreen.png)
-![Screenshot](./screenshots/screenshot_settings.png)
-![Screenshot](./screenshots/screenshot_aboutapp.png)
+<img src="./screenshots/screenshot_splashscreen.png" alt="Splash Screen" width="225" height="450" />
+<img src="./screenshots/screenshot_onboarding_start.png" alt="Onboarding Start" width="225" height="450" />
+<img src="./screenshots/screenshot_onboarding_end.png" alt="Onboarding End" width="225" height="450" />
+<img src="./screenshots/screenshot_signinscreen.png" alt="Sign In Screen" width="225" height="450" />
+<img src="./screenshots/screenshot_signupscreen.png" alt="Sign Up Screen" width="225" height="450" />
+<img src="./screenshots/screenshot_homescreen.png" alt="Home Screen" width="225" height="450" />
+<img src="./screenshots/screenshot_recipedetails.png" alt="Recipe Details" width="225" height="450" />
+<img src="./screenshots/screenshot_search_filter.png" alt="Search Filter" width="225" height="450" />
+<img src="./screenshots/screenshot_instructions.png" alt="Instructions" width="225" height="450" />
+<img src="./screenshots/screenshot_favoritescreen.png" alt="Favorite Screen" width="225" height="450" />
+<img src="./screenshots/screenshot_settings.png" alt="Settings" width="225" height="450" />
+<img src="./screenshots/screenshot_aboutapp.png" alt="About App" width="225" height="450" />
 
 Credits
 ------------------------------------------
