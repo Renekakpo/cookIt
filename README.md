@@ -34,7 +34,7 @@ Getting Started
 
 Screenshots
 ------------------------------------------
-![Screenshot](./screenshots/screenshot_splashscreen.png)
+<img src="./screenshots/screenshot_splashscreen.png" alt="Splash Screen" width="400" />
 ![Screenshot](./screenshots/screenshot_onboarding_start.png)
 ![Screenshot](./screenshots/screenshot_onboarding_end.png)
 ![Screenshot](./screenshots/screenshot_signinscreen.png)
