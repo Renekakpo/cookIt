@@ -23,6 +23,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.cookit.R
 import com.example.cookit.models.Recipe
+import kotlin.math.roundToInt
 
 @Composable
 fun RecipeList(recipes: List<Recipe>, onItemClicked: (Recipe) -> Unit) {
@@ -95,7 +96,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe?, onItemClicked: (Recipe) -> U
                     Spacer(modifier = Modifier.weight(1f))
 
                     TextWithLeftIcon(
-                        text = "${recipe?.spoonacularScore}",
+                        text = "${recipe?.spoonacularScore?.roundToInt()}",
                         isTimeIcon = false
                     )
                 }

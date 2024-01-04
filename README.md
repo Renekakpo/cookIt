@@ -34,14 +34,18 @@ Getting Started
 
 Screenshots
 ------------------------------------------
-![Screenshot](./screenshots/cookit_splash_screen.png)
-![Screenshot](./screenshots/onboarding_page_1.png)
-![Screenshot](./screenshots/onboarding_last_page.png)
-![Screenshot](./screenshots/cookit_homescreen.png)
-![Screenshot](./screenshots/cookit_searchscreen.png)
-![Screenshot](./screenshots/favorite_recipes_screen.png)
-![Screenshot](./screenshots/recipe_details_screen.png)
-![Screenshot](./screenshots/recipe_instructions_screen.png)
+![Screenshot](./screenshots/screenshot_splashscreen.png)
+![Screenshot](./screenshots/screenshot_onboarding_start.png)
+![Screenshot](./screenshots/screenshot_onboarding_end.png)
+![Screenshot](./screenshots/screenshot_signinscreen.png)
+![Screenshot](./screenshots/screenshot_signupscreen.png)
+![Screenshot](./screenshots/screenshot_homescreen.png)
+![Screenshot](./screenshots/screenshot_recipedetails.png)
+![Screenshot](./screenshots/screenshot_search_filter.png)
+![Screenshot](./screenshots/screenshot_instructions.png)
+![Screenshot](./screenshots/screenshot_favoritescreen.png)
+![Screenshot](./screenshots/screenshot_settings.png)
+![Screenshot](./screenshots/screenshot_aboutapp.png)
 
 Credits
 ------------------------------------------

@@ -40,6 +40,7 @@ import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.INGREDIENT_IMAGE_BASE_URL
 import com.example.cookit.utils.showMessage
 import kotlinx.coroutines.launch
+import kotlin.math.roundToLong
 
 object RecipeDetailScreen : NavDestination {
     override val route: String = "recipe_info"
@@ -244,7 +245,7 @@ fun RecipeDetailsScreenContent(
         Text(
             text = "${recipe.title?.replaceFirstChar { it.uppercase() }}",
             style = MaterialTheme.typography.h6,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 15.dp, end = 15.dp)
@@ -528,7 +529,7 @@ fun IngredientItem(ingredient: ExtendedIngredient) {
         Spacer(modifier = Modifier.width(15.dp))
 
         Text(
-            text = "${ingredient.amount} ${ingredient.unit}",
+            text = "${ingredient.amount?.roundToLong()} ${ingredient.unit}",
             style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
