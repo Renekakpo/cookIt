@@ -12,34 +12,6 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
-    val onBoardingCompleted: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.d(TAG, "Error reading preferences", it)
-                emit(value = emptyPreferences())
-            } else {
-                throw it
-            }
-        }.map { prefs -> prefs[ON_BOARDING_COMPLETED] ?: true }
-
-    suspend fun saveOnBoardingCompletionState(isOnBoardingCompleted: Boolean) {
-        dataStore.edit { prefs -> prefs[ON_BOARDING_COMPLETED] = isOnBoardingCompleted }
-    }
-
-    val loginCompletionState: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.d(TAG, "Error reading preferences", it)
-                emit(value = emptyPreferences())
-            } else {
-                throw it
-            }
-        }.map { prefs -> prefs[ON_LOGIN_COMPLETED] ?: true }
-
-    suspend fun saveLoginCompletionState(isLoginCompleted: Boolean) {
-        dataStore.edit { prefs -> prefs[ON_LOGIN_COMPLETED] = isLoginCompleted }
-    }
-
     val cuisineTypeFilter: Flow<String> = dataStore.data
         .catch {
             if (it is IOException) {
@@ -129,8 +101,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
 
     private companion object {
         val TAG: String = CookItDataStoreRepository::class.java.simpleName
-        val ON_BOARDING_COMPLETED = booleanPreferencesKey(name = "onBoarding_completed")
-        val ON_LOGIN_COMPLETED = booleanPreferencesKey(name = "on_login_completed")
         val CUISINE_TYPE_FILTER = stringPreferencesKey(name = "cuisine_type_filter")
         val MEAL_TYPE_FILTER = stringPreferencesKey(name = "meal_type_filter")
         val DIET_FILTER = stringPreferencesKey(name = "diet_filter")

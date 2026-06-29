@@ -41,11 +41,6 @@ Getting Started
 Screenshots
 ------------------------------------------
 <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-    <img src="./screenshots/screenshot_splashscreen.png" alt="Splash Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_onboarding_start.png" alt="Onboarding Start" width="225" height="450" />
-    <img src="./screenshots/screenshot_onboarding_end.png" alt="Onboarding End" width="225" height="450" />
-    <img src="./screenshots/screenshot_signinscreen.png" alt="Sign In Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_signupscreen.png" alt="Sign Up Screen" width="225" height="450" />
     <img src="./screenshots/screenshot_homescreen.png" alt="Home Screen" width="225" height="450" />
     <img src="./screenshots/screenshot_recipedetails.png" alt="Recipe Details" width="225" height="450" />
     <img src="./screenshots/screenshot_search_filter.png" alt="Search Filter" width="225" height="450" />
