@@ -114,6 +114,13 @@ fun SearchScreenMainContainer(
             is SearchUiState.Loading -> {
                 LoadingScreen(modifier = modifier)
             }
+            is SearchUiState.Empty -> {
+                ErrorScreen(
+                    modifier = modifier,
+                    errorMessage = stringResource(R.string.empty_search_results_text),
+                    onRetry = { searchViewModel.searchRecipe(query = "", filter = FilterUiState()) }
+                )
+            }
             is SearchUiState.Error -> {
                 ErrorScreen(
                     modifier = modifier,
