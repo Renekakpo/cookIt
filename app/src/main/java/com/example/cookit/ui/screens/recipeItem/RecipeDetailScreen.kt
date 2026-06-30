@@ -96,71 +96,64 @@ fun RecipeDetailsScreen(
     onStartCookingClicked: (List<Step>) -> Unit,
     viewModel: RecipeInfoViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
+    val state by viewModel.uiState.collectAsState()
 
-    val localRecipeData: Recipe? by viewModel.localRecipeData.collectAsState()
-    val addedToFavoriteRecipes: Boolean by viewModel.addedToFavorite.collectAsState()
-
-    when (val recipeUiState = viewModel.recipeDetailsUiState) {
+    when (val uiState = state) {
         is RecipeDetailsUiState.Loading -> {
             LoadingScreen()
         }
 
         is RecipeDetailsUiState.Success -> {
-            val recipe = recipeUiState.recipe
+            if (uiState.fromCache) {
+                OfflineIndicator()
+            }
 
             RecipeDetailsScreenContent(
-                onLikeClicked = { state ->
-                    viewModel.updateFavoriteDataState(
-                        isFavorite = state,
-                        recipe = recipe
-                    )
+                onLikeClicked = { liked ->
+                    viewModel.updateFavoriteDataState(isFavorite = liked)
                 },
                 onStartCookingClicked = onStartCookingClicked,
                 navigateUp = navigateUp,
-                recipe = recipe,
-                addedToFavoriteRecipes = addedToFavoriteRecipes
+                recipe = uiState.recipe,
+                addedToFavoriteRecipes = uiState.isFavorite
             )
-
-            if (addedToFavoriteRecipes) {
-                viewModel.updateFavoriteRecipeDetails(item = recipe)
-            }
         }
 
-        is RecipeDetailsUiState.Updated -> {
-            showMessage(
-                context = context,
-                message = "Recipe data updated"
+        is RecipeDetailsUiState.ErrorOfflineNoCache -> {
+            ErrorScreen(
+                errorMessage = stringResource(R.string.recipe_unavailable_offline_message),
+                onRetry = { viewModel.load(id) }
             )
         }
 
         is RecipeDetailsUiState.Error -> {
-            if (localRecipeData != null) {
-                RecipeDetailsScreenContent(
-                    onLikeClicked = { state ->
-                        viewModel.updateFavoriteDataState(
-                            isFavorite = state,
-                            recipe = localRecipeData!!
-                        )
-                    },
-                    onStartCookingClicked = onStartCookingClicked,
-                    navigateUp = navigateUp,
-                    recipe = localRecipeData!!,
-                    addedToFavoriteRecipes = true
-                )
-            } else {
-                ErrorScreen(
-                    errorMessage = stringResource(R.string.data_retrieving_error_message),
-                    onRetry = { viewModel.getNetworkRecipeDetails(recipeId = id) }
-                )
-            }
+            ErrorScreen(
+                errorMessage = stringResource(R.string.data_retrieving_error_message),
+                onRetry = { viewModel.load(id) }
+            )
         }
     }
 
     LaunchedEffect(id) {
-        viewModel.isFavoriteRecipe(recipeId = id)
-        viewModel.getNetworkRecipeDetails(recipeId = id)
-        viewModel.getLocalRecipeDetails(recipeId = id)
+        viewModel.load(id)
+    }
+}
+
+@Composable
+fun OfflineIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f))
+            .padding(vertical = 6.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.offline_indicator_text),
+            style = MaterialTheme.typography.caption,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
+        )
     }
 }
 
