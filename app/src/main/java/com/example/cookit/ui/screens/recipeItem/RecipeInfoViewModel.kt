@@ -10,6 +10,8 @@ import com.example.cookit.data.network.CookItNetworkRepository
 import com.example.cookit.data.offline.RecipesRepository
 import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,8 @@ sealed interface RecipeDetailsUiState {
     data class Success(val recipe: Recipe) : RecipeDetailsUiState
 }
 
-class RecipeInfoViewModel(
+@HiltViewModel
+class RecipeInfoViewModel @Inject constructor(
     private val networkRepository: CookItNetworkRepository,
     private val localDataSource: RecipesRepository,
     private val localDataStore: CookItDataStoreRepository,

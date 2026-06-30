@@ -28,20 +28,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cookit.BuildConfig
 import com.example.cookit.R
 import com.example.cookit.ui.theme.CookItTheme
-import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingsItemScreen(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(

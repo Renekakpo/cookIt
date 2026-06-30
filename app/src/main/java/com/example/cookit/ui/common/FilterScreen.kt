@@ -15,13 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cookit.R
 import com.example.cookit.ui.screens.search.SearchViewModel
-import com.example.cookit.ui.theme.CookItTheme
-import com.example.cookit.utils.AppViewModelProvider
 
 @Composable
 fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit) {
@@ -120,16 +116,5 @@ fun FilterScreen(searchViewModel: SearchViewModel, closeBottomSheet: () -> Unit)
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun FilterScreenPreview() {
-    CookItTheme {
-        FilterScreen(
-            searchViewModel = viewModel(factory = AppViewModelProvider.Factory),
-            closeBottomSheet = {}
-        )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cookit.ui.screens.search
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,10 +8,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cookit.R
-import com.example.cookit.app.CookIt.Companion.appContext
 import com.example.cookit.data.network.CookItNetworkRepository
 import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.launch
@@ -29,9 +32,11 @@ data class FilterUiState(
     val intolerances: List<String>? = null
 )
 
-class SearchViewModel(
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val dataStore: CookItDataStoreRepository,
-    private val networkRepository: CookItNetworkRepository
+    private val networkRepository: CookItNetworkRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     var searchUiState: SearchUiState by mutableStateOf(SearchUiState.NoQuery)
@@ -74,7 +79,7 @@ class SearchViewModel(
                     intolerances = filter.intolerances?.joinToString { ", " }
                 )
                 if (res.results.isNullOrEmpty()) {
-                    SearchUiState.Error(errorMessage = appContext.getString(R.string.empty_search_results_text))
+                    SearchUiState.Error(errorMessage = context.getString(R.string.empty_search_results_text))
                 } else {
                     SearchUiState.Success(recipes = res.results)
                 }

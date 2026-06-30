@@ -11,6 +11,8 @@ import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.utils.getFoodSuggestion
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,8 @@ sealed interface HomeUiState {
     data class Success(val randomRecipes: RandomRecipesAPIRes) : HomeUiState
 }
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val cookItNetworkRepository: CookItNetworkRepository,
     private val dataStore: CookItDataStoreRepository
 ) : ViewModel() {

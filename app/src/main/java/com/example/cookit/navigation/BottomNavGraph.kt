@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.cookit.R
 import com.example.cookit.ui.common.FilterScreen
@@ -23,7 +23,6 @@ import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.search.SearchScreen
 import com.example.cookit.ui.screens.search.SearchViewModel
 import com.example.cookit.ui.screens.settings.SettingsItemScreen
-import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 object BottomNavGraph : NavDestination {
@@ -54,7 +53,7 @@ fun CookItBottomNavHost(modifier: Modifier = Modifier, navController: NavHostCon
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true,
     )
-    val searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val searchViewModel: SearchViewModel = hiltViewModel()
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
