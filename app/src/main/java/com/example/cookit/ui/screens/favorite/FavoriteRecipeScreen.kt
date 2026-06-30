@@ -14,17 +14,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cookit.R
 import com.example.cookit.ui.common.VerticalGridList
 import com.example.cookit.ui.theme.CookItTheme
-import com.example.cookit.utils.AppViewModelProvider
 
 @Composable
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
     onRecipeSelected: (Long) -> Unit,
-    favoriteRecipeViewModel: FavoriteRecipeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    favoriteRecipeViewModel: FavoriteRecipeViewModel = hiltViewModel()
 ) {
     val favoriteRecipeList by favoriteRecipeViewModel.favoriteRecipeUiState.collectAsState()
 

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -36,7 +36,6 @@ import com.example.cookit.models.Step
 import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.common.ErrorScreen
 import com.example.cookit.ui.common.LoadingScreen
-import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.INGREDIENT_IMAGE_BASE_URL
 import com.example.cookit.utils.showMessage
 import kotlinx.coroutines.launch
@@ -52,7 +51,7 @@ object RecipeDetailScreen : NavDestination {
 fun RecipeDetailsScreenMainContainer(
     id: Long,
     navigateUp: () -> Unit,
-    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RecipeInfoViewModel = hiltViewModel()
 ) {
     val stepsState =
         remember { mutableStateOf<List<Step>>(emptyList()) }
@@ -95,7 +94,7 @@ fun RecipeDetailsScreen(
     id: Long,
     navigateUp: () -> Unit,
     onStartCookingClicked: (List<Step>) -> Unit,
-    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RecipeInfoViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 

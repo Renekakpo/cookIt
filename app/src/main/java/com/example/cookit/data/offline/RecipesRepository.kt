@@ -3,6 +3,7 @@ package com.example.cookit.data.offline
 import com.example.cookit.database.RecipeDao
 import com.example.cookit.models.Recipe
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 
 /**
@@ -40,7 +41,7 @@ interface RecipesRepository {
     suspend fun updateItem(recipe: Recipe)
 }
 
-class OfflineRecipeRepository(private val recipeDao: RecipeDao): RecipesRepository {
+class OfflineRecipeRepository @Inject constructor(private val recipeDao: RecipeDao): RecipesRepository {
     override fun getAllItemsStream(): Flow<List<Recipe>> = recipeDao.getAllItems()
 
     override fun getItemStream(id: Long): Recipe? = recipeDao.getItem(id)

@@ -5,6 +5,7 @@ import com.example.cookit.models.Recipe
 import com.example.cookit.models.SearchApiRes
 import com.example.cookit.network.CookItApiService
 import com.example.cookit.BuildConfig
+import javax.inject.Inject
 
 interface CookItNetworkRepository {
     suspend fun searchRecipes(
@@ -30,7 +31,7 @@ interface CookItNetworkRepository {
     ): RandomRecipesAPIRes
 }
 
-class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiService) :
+class DefaultCookItNetworkRepository @Inject constructor(private val cookItApiService: CookItApiService) :
     CookItNetworkRepository {
     override suspend fun searchRecipes(
         apiKey: String,

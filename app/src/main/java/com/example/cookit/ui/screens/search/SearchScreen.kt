@@ -11,12 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cookit.R
 import com.example.cookit.models.Recipe
 import com.example.cookit.ui.common.*
 import com.example.cookit.ui.theme.CookItTheme
-import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -27,7 +26,7 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     onFilterClicked: () -> Unit,
     onRecipeSelected: (Long) -> Unit,
-    searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     var filter by remember { mutableStateOf(FilterUiState()) }
 
