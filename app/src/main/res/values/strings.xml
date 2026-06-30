@@ -11,6 +11,8 @@
     <string name="apply_filter_button_text">Apply Filter</string>
     <string name="recipe_filter_modal_title">Filter Recipes</string>
     <string name="data_retrieving_error_message">Failed to retrieve data. Kindly check your internet connexion.</string>
+    <string name="recipe_unavailable_offline_message">This recipe is unavailable offline.</string>
+    <string name="offline_indicator_text">Offline — showing saved version</string>
     <string name="retry_text">Retry</string>
     <string name="error_text">Error</string>
     <string name="search_screen_content_description">Explore new flavors and find your next favorite recipe! Start your search by entering a dish name above.</string>
