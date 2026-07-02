@@ -2,24 +2,30 @@ package com.example.cookit.models.converters
 
 import androidx.room.TypeConverter
 import com.example.cookit.models.Nutrition
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.cookit.utils.appJson
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
 class NutritionConverters {
     /**
-     * Convert a a list of [Nutrition] to a Json
+     * Convert a [Nutrition] to a Json string.
      */
     @TypeConverter
     fun fromTypesJson(nutrition: Nutrition?): String {
-        return Gson().toJson(nutrition) ?: ""
+        return if (nutrition == null) "" else appJson.encodeToString(nutrition)
     }
 
     /**
-     * Convert a json to a list of [Nutrition]
+     * Convert a Json string to a [Nutrition].
+     * Best-effort: returns null on unreadable/legacy data.
      */
     @TypeConverter
     fun toTypesList(jsonTypes: String?): Nutrition? {
-        val notesType = object : TypeToken<Nutrition>() {}.type
-        return Gson().fromJson(jsonTypes, notesType)
+        if (jsonTypes.isNullOrEmpty()) return null
+        return try {
+            appJson.decodeFromString<Nutrition>(jsonTypes)
+        } catch (e: Exception) {
+            null
+        }
     }
 }

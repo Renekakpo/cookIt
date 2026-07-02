@@ -5,9 +5,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.cookit.models.converters.AnalyzedInstructionsConverters
+import com.example.cookit.models.converters.ExtendedIngredientConverters
+import com.example.cookit.models.converters.NutritionConverters
 import com.example.cookit.models.converters.StringListConverters
 import com.example.cookit.utils.RECIPE_TABLE_NAME
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -60,9 +62,9 @@ data class Recipe(
     val weightWatcherSmartPoints: Int? = 0,
     @TypeConverters(StringListConverters::class)
     val dishTypes: List<String>? = null,
-    @TypeConverters(ExtendedIngredient::class)
+    @TypeConverters(ExtendedIngredientConverters::class)
     val extendedIngredients: List<ExtendedIngredient> = emptyList(),
-    @TypeConverters(Nutrition::class)
+    @TypeConverters(NutritionConverters::class)
     val nutrition: Nutrition? = null,
     var cooked: Boolean = false
 )
@@ -71,12 +73,12 @@ data class Recipe(
 data class ExtendedIngredient(
     val aisle: String? = null,
     val amount: Double? = 0.0,
-    @SerializedName("consitency")
+    @SerialName("consitency")
     val consistency: String? = null,
     val id: Int? = 0,
     val image: String? = null,
-    val measures: Map<String, Measure>,
-    val meta: List<String>?,
+    val measures: Map<String, Measure> = emptyMap(),
+    val meta: List<String>? = null,
     val name: String? = null,
     val nameClean: String? = null,
     val original: String? = null,

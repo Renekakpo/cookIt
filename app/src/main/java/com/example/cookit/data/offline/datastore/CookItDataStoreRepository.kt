@@ -4,11 +4,12 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import com.example.cookit.ui.screens.search.FilterUiState
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.cookit.utils.appJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import java.io.IOException
 
 class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
@@ -57,9 +58,15 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs ->
             val listAsString = prefs[INTOLERANCES_FILTER] ?: ""
-            val listType = object : TypeToken<List<String>>() {}.type
-            val intolerances = Gson().fromJson<List<String>>(listAsString, listType)
-            intolerances ?: emptyList()
+            if (listAsString.isEmpty()) {
+                emptyList()
+            } else {
+                try {
+                    appJson.decodeFromString<List<String>>(listAsString)
+                } catch (e: Exception) {
+                    emptyList()
+                }
+            }
         }
 
     suspend fun saveAllFilter(filterUiState: FilterUiState) {
@@ -67,7 +74,7 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             it[CUISINE_TYPE_FILTER] = filterUiState.cuisine
             it[MEAL_TYPE_FILTER] = filterUiState.meal
             it[DIET_FILTER] = filterUiState.diet
-            it[INTOLERANCES_FILTER] = filterUiState.intolerances.toString()
+            it[INTOLERANCES_FILTER] = appJson.encodeToString(filterUiState.intolerances.orEmpty())
         }
     }
 
