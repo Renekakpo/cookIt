@@ -88,8 +88,6 @@ dependencies {
     testImplementation 'com.google.truth:truth:1.1.5'
     // Coil
     implementation "io.coil-kt:coil-compose:2.1.0"
-    // Google GSON
-    implementation 'com.google.code.gson:gson:2.9.0'
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"

@@ -1,13 +1,13 @@
 package com.example.cookit.di
 
 import com.example.cookit.network.CookItApiService
+import com.example.cookit.utils.appJson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -27,8 +27,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        val json = Json { ignoreUnknownKeys = true }
-        val jsonConverter = json.asConverterFactory("application/json".toMediaType())
+        val jsonConverter = appJson.asConverterFactory("application/json".toMediaType())
         return Retrofit.Builder()
             .addConverterFactory(jsonConverter)
             .baseUrl(BASE_URL)
