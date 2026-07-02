@@ -1,4 +1,5 @@
 CookIt
+[![CI](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml/badge.svg)](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml)
 ============================================
 
 CookIt is a recipe search app that helps users find and save their favorite recipes. The app uses
