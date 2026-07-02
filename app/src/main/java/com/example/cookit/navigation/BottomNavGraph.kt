@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -46,7 +47,7 @@ fun CookItBottomNavHost(modifier: Modifier = Modifier, navController: NavHostCon
         BottomNavScreen.Settings
     )
 
-    val currentRoute = remember { mutableStateOf(BottomNavScreen.Home.route) }
+    val currentRoute = rememberSaveable { mutableStateOf(BottomNavScreen.Home.route) }
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -140,9 +141,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     })
@@ -156,9 +154,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     }
@@ -172,9 +167,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     }
