@@ -5,8 +5,9 @@ on:
     branches: [develop, main]
   pull_request:
     branches: [develop, main]
-  permissions:
-    contents: read
+
+permissions:
+  contents: read
 
 jobs:
   build-and-test:
