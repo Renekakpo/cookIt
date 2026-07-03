@@ -35,7 +35,12 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun CookItTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun CookItTheme(themeMode: ThemeMode = ThemeMode.SYSTEM, content: @Composable () -> Unit) {
+    val darkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
     val systemUiController = rememberSystemUiController()
 
     val colors = if (darkTheme) {

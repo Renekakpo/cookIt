@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cookit.data.offline.RecipesRepository
 import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
+import com.example.cookit.ui.theme.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -21,5 +22,11 @@ class SettingsViewModel @Inject constructor(private val recipeRepository: Recipe
 
     fun getCookedRecipesCount(): Flow<Long> {
         return localDataStore.cookedRecipesCount
+    }
+
+    val themeMode: Flow<ThemeMode> get() = localDataStore.themeMode
+
+    fun setThemeMode(mode: ThemeMode) {
+        viewModelScope.launch { localDataStore.saveThemeMode(mode) }
     }
 }
