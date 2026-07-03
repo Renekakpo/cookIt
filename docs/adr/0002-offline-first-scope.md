@@ -5,14 +5,13 @@ Status: Accepted
 
 ## Context
 
-Recipe data is not homogeneous. Favorites are user-owned data that must work
+Not all recipe data needs the same treatment. Favorites are user-owned data that must work
 offline. Search results are ephemeral and query-dependent. Random "home"
 recipes sit in between. The Spoonacular terms also restrict persistent storage
 of their content.
 
-A naive NetworkBoundResource caching every viewed recipe would require an
-`isFavorite` flag plus a Room migration, and would persist transient data the
-user will never reopen - for marginal value.
+Caching every viewed recipe would need an `isFavorite` flag and a Room migration,
+just to store recipes the user won't open again. Not worth it.
 
 ## Decision
 
