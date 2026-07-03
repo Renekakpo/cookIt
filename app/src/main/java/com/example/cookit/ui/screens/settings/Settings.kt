@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
@@ -24,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -103,70 +101,6 @@ fun SettingsMenuMainContainer(
         }
 
         Spacer(modifier = Modifier.height(height = 5.dp))
-
-        AsyncImage(
-            model = ImageRequest.Builder(context = LocalContext.current)
-                .data(R.drawable.onboarding_favorites)
-                .crossfade(true)
-                .build(),
-            contentDescription = stringResource(R.string.user_profile_picture_description),
-            contentScale = ContentScale.Crop,
-            error = painterResource(id = R.drawable.ic_broken_image),
-            placeholder = painterResource(id = R.drawable.loading_img),
-            modifier = Modifier
-                .size(90.dp)
-                .clip(shape = CircleShape),
-            alignment = Alignment.TopEnd
-        )
-
-        Spacer(modifier = Modifier.height(height = 15.dp))
-
-        OutlinedTextField(
-            value = "Lorem Ipsum",
-            singleLine = true,
-            readOnly = true,
-            enabled = false,
-            textStyle = typography.subtitle1,
-            onValueChange = { },
-            label = {
-                Text(
-                    text = stringResource(R.string.fullName),
-                    color = colors.onBackground.copy(alpha = 0.3f)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = colors.onBackground.copy(alpha = 0.3f),
-                unfocusedBorderColor = colors.onBackground.copy(alpha = 0.3f)
-            ),
-            shape = MaterialTheme.shapes.small
-        )
-
-        Spacer(modifier = Modifier.height(height = 15.dp))
-
-        OutlinedTextField(
-            value = "loremipsum@example.com",
-            singleLine = true,
-            readOnly = true,
-            enabled = false,
-            onValueChange = { },
-            label = {
-                Text(
-                    text = stringResource(R.string.email_text),
-                    color = colors.onBackground.copy(alpha = 0.3f)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = colors.onBackground.copy(alpha = 0.3f),
-                unfocusedBorderColor = colors.onBackground.copy(alpha = 0.3f)
-            ),
-            shape = MaterialTheme.shapes.small
-        )
-
-        Spacer(modifier = Modifier.height(height = 15.dp))
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(
