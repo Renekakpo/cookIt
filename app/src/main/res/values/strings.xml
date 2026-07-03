@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CookIt</string>
-    <string name="email_text">Email</string>
     <string name="user_profile_picture_description">User profile picture</string>
     <string name="recipe_suggestion_text">What would you like to have for %1$s today?</string>
     <string name="recipe_image_description">Recipe image</string>
@@ -34,7 +33,6 @@
     <string name="recipe_details_screen_title">Recipe</string>
     <string name="instructions_text">Instructions</string>
     <string name="about_app_text">About app</string>
-    <string name="fullName">FullName</string>
     <string name="app_info">CookIt is a recipe search app that helps users find and save their favorite recipes. The app uses the Spoonacular API to search for recipes based on keywords, ingredients, and dietary restrictions. Users can also save recipes to their favorites list and view detailed nutrition information for each recipe on offline.</string>
     <string name="version_name_text">Version %s</string>
     <string name="total_favorites_text">Total Favorites</string>
