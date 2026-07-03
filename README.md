@@ -3,10 +3,9 @@
 [![CI](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml/badge.svg)](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Renekakpo/cookIt/blob/main/LICENSE)
 
-CookIt is an Android recipe app that helps users search, browse and save recipes. It is powered by
-the [Spoonacular API](https://spoonacular.com/food-api) - search by keyword, ingredients and dietary
-restrictions, read step-by-step cooking instructions and nutrition details, and keep favorites
-available offline.
+An Android recipe app built on the [Spoonacular API](https://spoonacular.com/food-api).
+Search recipes by keyword, ingredients or diet, read the cooking steps and nutrition,
+and save favorites to open them offline.
 
 ## Features
 
@@ -45,12 +44,11 @@ ui/           Compose screens, common components, theme
 utils/        helpers
 ```
 
-Recipe detail is offline-first: the repository exposes a `Flow<Resource<Recipe>>`
-that serves the cached copy first, then refreshes from the network, preserving user
-state (the "cooked" count) on merge. This single-source-of-truth pattern is scoped to
-favorites - a proactive network monitor and caching of non-favorite recipes are
-intentionally out of scope (see ADR 0002). The offline-first merge logic is covered by
-unit tests (cache/network precedence, offline fallback, state preservation).
+The recipe detail screen is offline-first. The repository returns a `Flow<Resource<Recipe>>`
+that shows the cached recipe first, then refreshes it from the network and keeps the
+"cooked" count on refresh. Only favorites are cached this way; search and home stay
+network-backed (see ADR 0002). The merge logic is covered by unit tests: cache vs network
+order, offline fallback, and keeping the cooked count.
 
 Key design decisions are recorded as ADRs in [docs/adr/](docs/adr/):
 
@@ -92,8 +90,7 @@ and uploads the test and lint reports as build artifacts.
 |---|---|
 | <img src="./screenshots/screenshot_homescreen.png" alt="Home screen" width="225" height="450" /> | <img src="./screenshots/screenshot_search_filter.png" alt="Search and filters" width="225" height="450" /> |
 | <img src="./screenshots/screenshot_recipedetails.png" alt="Recipe details" width="225" height="450" /> | <img src="./screenshots/screenshot_instructions.png" alt="Cooking instructions" width="225" height="450" /> |
-| <img src="./screenshots/screenshot_favoritescreen.png" alt="Favorites" width="225" height="450" /> | <img src="./screenshots/screenshot_settings.png" alt="Settings" width="225" height="450" /> |
-| <img src="./screenshots/screenshot_aboutapp.png" alt="About" width="225" height="450" /> | |
+| <img src="./screenshots/screenshot_favoritescreen.png" alt="Favorites" width="225" height="450" /> |
 
 ## Credits
 
