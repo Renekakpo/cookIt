@@ -9,7 +9,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -59,7 +58,7 @@ fun MealTypeChip(
     val chipBackgroundColor =
         if (isSelected) colors.primary else colors.primary.copy(alpha = 0.3f)
     val textColor =
-        if (isSelected) colors.onPrimary else Color.DarkGray.copy(alpha = 0.87f)
+        if (isSelected) colors.onPrimary else colors.onPrimary.copy(alpha = 0.87f)
 
     Surface(
         modifier = Modifier.clickable { onMealTypeSelected(mealType) },
