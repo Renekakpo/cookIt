@@ -30,7 +30,7 @@ fun RecipeList(recipes: List<Recipe>, onItemClicked: (Recipe) -> Unit) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
-        itemsIndexed(recipes) { _, recipe ->
+        itemsIndexed(recipes, key = { _, recipe -> recipe.id }) { _, recipe ->
             RecipeCard(
                 modifier = Modifier.fillMaxWidth().height(250.dp),
                 recipe = recipe,

@@ -354,7 +354,7 @@ fun RecipeDetailsScreenContent(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(recipe.dishTypes ?: emptyList()) { item ->
+            items(recipe.dishTypes ?: emptyList(), key = { it }) { item ->
                 Box(
                     modifier = Modifier
                         .background(
@@ -405,7 +405,10 @@ fun RecipeDetailsScreenContent(
                 .padding(start = 15.dp, end = 15.dp),
             contentPadding = PaddingValues(vertical = 10.dp),
         ) {
-            items(recipe.extendedIngredients) { extendedIngredient ->
+            itemsIndexed(
+                recipe.extendedIngredients,
+                key = { index, ing -> ing.original ?: ing.name ?: index }
+            ) { _, extendedIngredient ->
                 IngredientItem(ingredient = extendedIngredient)
             }
         }
@@ -556,7 +559,7 @@ fun AnalyzedInstructionsSheet(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            itemsIndexed(steps) { _, step ->
+            itemsIndexed(steps, key = { _, step -> step.number }) { _, step ->
                 InstructionsItem(
                     modifier = Modifier.heightIn(min = 48.dp),
                     step = step
