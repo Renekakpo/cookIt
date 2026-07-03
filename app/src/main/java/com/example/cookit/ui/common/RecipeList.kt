@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
+import coil.size.Size
 import com.example.cookit.R
 import com.example.cookit.models.Recipe
 import kotlin.math.roundToInt
@@ -49,6 +52,10 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe?, onItemClicked: (Recipe) -> U
         modifier = modifier.background(color = Color.Transparent),
         onClick = { recipe?.let { onItemClicked(it) } }
     ) {
+        val density = LocalDensity.current
+        val configuration = LocalConfiguration.current
+        val targetWidthPx = with(density) { configuration.screenWidthDp.dp.roundToPx() }
+        val targetHeightPx = with(density) { 250.dp.roundToPx() }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,7 +64,7 @@ fun RecipeCard(modifier: Modifier, recipe: Recipe?, onItemClicked: (Recipe) -> U
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data(recipe?.image)
-                    .crossfade(true)
+                    .size(Size(targetWidthPx, targetHeightPx))
                     .scale(Scale.FILL)
                     .build(),
                 contentDescription = stringResource(R.string.recipe_image_description),

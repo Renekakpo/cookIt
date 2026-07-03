@@ -405,10 +405,10 @@ fun RecipeDetailsScreenContent(
                 .padding(start = 15.dp, end = 15.dp),
             contentPadding = PaddingValues(vertical = 10.dp),
         ) {
-            itemsIndexed(
+            items(
                 recipe.extendedIngredients,
-                key = { index, ing -> ing.original ?: ing.name ?: index }
-            ) { _, extendedIngredient ->
+                key = { ing -> ing.original?.takeIf { it.isNotBlank() } ?: ing.name ?: "" }
+            ) { extendedIngredient ->
                 IngredientItem(ingredient = extendedIngredient)
             }
         }
