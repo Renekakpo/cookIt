@@ -12,7 +12,7 @@ of their content.
 
 A naive NetworkBoundResource caching every viewed recipe would require an
 `isFavorite` flag plus a Room migration, and would persist transient data the
-user will never reopen — for marginal value.
+user will never reopen - for marginal value.
 
 ## Decision
 
@@ -22,7 +22,7 @@ favorites cache-first with a network refresh; non-favorites are served from
 network and never written to Room. No isFavorite flag, no schema migration.
 
 Offline detection is pragmatic (catch IOException, fall back to cache) rather
-than a proactive ConnectivityManager monitor — the monitor is tracked
+than a proactive ConnectivityManager monitor - the monitor is tracked
 separately and not needed for this behavior.
 
 ## Consequences

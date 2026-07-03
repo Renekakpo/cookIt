@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Renekakpo/cookIt/blob/main/LICENSE)
 
 CookIt is an Android recipe app that helps users search, browse and save recipes. It is powered by
-the [Spoonacular API](https://spoonacular.com/food-api) — search by keyword, ingredients and dietary
+the [Spoonacular API](https://spoonacular.com/food-api) - search by keyword, ingredients and dietary
 restrictions, read step-by-step cooking instructions and nutrition details, and keep favorites
 available offline.
 
@@ -48,14 +48,14 @@ utils/        helpers
 Recipe detail is offline-first: the repository exposes a `Flow<Resource<Recipe>>`
 that serves the cached copy first, then refreshes from the network, preserving user
 state (the "cooked" count) on merge. This single-source-of-truth pattern is scoped to
-favorites — a proactive network monitor and caching of non-favorite recipes are
+favorites - a proactive network monitor and caching of non-favorite recipes are
 intentionally out of scope (see ADR 0002). The offline-first merge logic is covered by
 unit tests (cache/network precedence, offline fallback, state preservation).
 
 Key design decisions are recorded as ADRs in [docs/adr/](docs/adr/):
 
-* [0001 — Use Hilt for dependency injection](docs/adr/0001-use-hilt-for-dependency-injection.md)
-* [0002 — Offline-first scope: single source of truth for favorites only](docs/adr/0002-offline-first-scope.md)
+* [0001 - Use Hilt for dependency injection](docs/adr/0001-use-hilt-for-dependency-injection.md)
+* [0002 - Offline-first scope: single source of truth for favorites only](docs/adr/0002-offline-first-scope.md)
 
 ## Getting started
 

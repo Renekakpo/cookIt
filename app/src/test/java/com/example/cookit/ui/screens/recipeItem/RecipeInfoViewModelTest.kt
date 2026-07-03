@@ -29,7 +29,7 @@ import org.junit.Test
 /**
  * JVM unit tests for [RecipeInfoViewModel.uiState].
  *
- * uiState is a stateIn(WhileSubscribed(5000)) — a cold flow that only runs its upstream while
+ * uiState is a stateIn(WhileSubscribed(5000)) - a cold flow that only runs its upstream while
  * there is an active collector. Tests therefore either collect via Turbine inside runTest, or
  * launch a backgroundScope collector before reading uiState.value.
  *
