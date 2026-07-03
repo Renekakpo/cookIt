@@ -14,7 +14,7 @@ factory (`AppViewModelProvider`). Consequences:
   to resolve a string resource.
 - ViewModels could not be constructed in a unit test without the Application.
 - Adding a dependency meant editing the container, the factory, and the
-  call site — three places, by hand.
+  call site - three places, by hand.
 
 ## Decision
 

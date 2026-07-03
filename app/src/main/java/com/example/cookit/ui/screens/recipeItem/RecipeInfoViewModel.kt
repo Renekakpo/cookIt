@@ -44,7 +44,7 @@ class RecipeInfoViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest { id ->
             // Single source of the Recipe: recipeDetail (cache-first, then network).
-            // getItemStream is used ONLY to derive isFavorite as a Boolean — never to carry data —
+            // getItemStream is used ONLY to derive isFavorite as a Boolean - never to carry data -
             // so the row's presence keeps the heart live without a second network call.
             val isFavoriteFlow = localDataSource.getItemStream(id)
                 .map { it != null }
@@ -78,7 +78,7 @@ class RecipeInfoViewModel @Inject constructor(
 
     fun updateFavoriteDataState(isFavorite: Boolean) {
         // Insert exactly the Recipe currently displayed. For a non-favorite this is the network
-        // object served by recipeDetail() (never written to Room) — so favoriting caches that object,
+        // object served by recipeDetail() (never written to Room) - so favoriting caches that object,
         // not an empty one and without a re-fetch.
         val recipe = (uiState.value as? RecipeDetailsUiState.Success)?.recipe ?: return
         favoriteOp("updateFavoriteDataState") {

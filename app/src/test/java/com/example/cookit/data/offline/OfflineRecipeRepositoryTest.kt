@@ -117,7 +117,7 @@ class OfflineRecipeRepositoryTest {
             awaitComplete()
         }
 
-        // Non-favorite is served in-memory only — nothing hits Room.
+        // Non-favorite is served in-memory only - nothing hits Room.
         coVerify(exactly = 0) { recipeDao.update(any()) }
         coVerify(exactly = 0) { recipeDao.insert(any()) }
     }
