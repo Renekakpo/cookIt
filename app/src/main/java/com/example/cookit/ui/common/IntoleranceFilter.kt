@@ -1,6 +1,5 @@
 package com.example.cookit.ui.common
 
-import android.system.Os.remove
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -9,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cookit.R
@@ -58,7 +56,7 @@ fun IntoleranceFilter(
                             Icon(
                                 imageVector = Icons.Filled.Done,
                                 contentDescription = stringResource(R.string.filterchip_icon_description),
-                                tint = Color.White,
+                                tint = MaterialTheme.colors.onPrimary,
                                 modifier = Modifier.size(size = 24.dp)
                             )
                         }

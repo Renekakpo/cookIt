@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -13,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.cookit.R
 import com.example.cookit.ui.common.FilterScreen
@@ -23,7 +24,6 @@ import com.example.cookit.ui.screens.recipeItem.RecipeDetailScreen
 import com.example.cookit.ui.screens.search.SearchScreen
 import com.example.cookit.ui.screens.search.SearchViewModel
 import com.example.cookit.ui.screens.settings.SettingsItemScreen
-import com.example.cookit.utils.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 object BottomNavGraph : NavDestination {
@@ -47,14 +47,14 @@ fun CookItBottomNavHost(modifier: Modifier = Modifier, navController: NavHostCon
         BottomNavScreen.Settings
     )
 
-    val currentRoute = remember { mutableStateOf(BottomNavScreen.Home.route) }
+    val currentRoute = rememberSaveable { mutableStateOf(BottomNavScreen.Home.route) }
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true,
     )
-    val searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val searchViewModel: SearchViewModel = hiltViewModel()
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -141,9 +141,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     })
@@ -157,9 +154,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     }
@@ -173,9 +167,6 @@ fun BottomNav(
                         val destination =
                             "${RecipeDetailScreen.route}/${RecipeDetailScreen.itemID}"
                         navController.navigate(route = destination) {
-                            popUpTo(route = BottomNavGraph.route) {
-                                saveState = currentRoute.value == BottomNavScreen.Home.route
-                            }
                             launchSingleTop = true
                         }
                     }

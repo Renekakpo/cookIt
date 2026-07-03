@@ -27,7 +27,7 @@ fun RecipeFilterItems(
         state = listState,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        itemsIndexed(items) { _, item ->
+        itemsIndexed(items, key = { _, item -> item }) { _, item ->
             val backgroundColor = if (item.lowercase() == selectedItem?.lowercase())
                 MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
             else

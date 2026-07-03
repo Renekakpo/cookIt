@@ -20,14 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.cookit.R
 import com.example.cookit.models.Recipe
 import com.example.cookit.ui.common.*
 import com.example.cookit.ui.theme.CookItTheme
-import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.getFoodSuggestion
 import com.example.cookit.utils.getGreetingText
 import com.example.cookit.utils.showMessage
@@ -35,7 +34,7 @@ import com.example.cookit.utils.showMessage
 @Composable
 fun HomeItemScreen(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     onItemSelected: (Long) -> Unit = {}
 ) {
     val country = homeViewModel.homeFilterState.collectAsState(initial = null).value

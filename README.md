@@ -1,65 +1,101 @@
-CookIt
-============================================
+# CookIt
 
-CookIt is a recipe search app that helps users find and save their favorite recipes. The app uses
-the [Spoonacular API](https://spoonacular.com/food-api) to search for recipes based on keywords,
-ingredients, and dietary restrictions. Users can also save recipes to their favorites list and view
-detailed nutrition information for each recipe.
+[![CI](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml/badge.svg)](https://github.com/Renekakpo/cookIt/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Renekakpo/cookIt/blob/main/LICENSE)
 
-Features
--------------------------------------------
+An Android recipe app built on the [Spoonacular API](https://spoonacular.com/food-api).
+Search recipes by keyword, ingredients or diet, read the cooking steps and nutrition,
+and save favorites to open them offline.
 
-* Recipe search by keyword, ingredients, and dietary restrictions
+## Features
+
+* Recipe search by keyword, ingredients and dietary restrictions
 * Filter recipes by meal type and cuisine
-* Save recipes to favorites list
-* View detailed nutrition information for each recipe
-* User-friendly interface with intuitive navigation
+* Detailed recipe view with nutrition information
+* Step-by-step cooking instructions
+* Save recipes to a favorites list (available offline)
+* Settings and About screens
 
-Technologies Used
--------------------------------------------
+## Tech stack
 
-* Android SDK
-* Kotlin programming language
-* Android Architecture Components (ViewModel, LiveData)
-* Retrofit for API communication
-* Picasso for image loading
-* Material Design for UI components
+* **Language:** Kotlin 1.9.10 (JVM toolchain 17)
+* **UI:** Jetpack Compose (Compose UI 1.4.3, Material, Material Icons Extended, Navigation Compose 2.5.3, Accompanist)
+* **DI:** Hilt 2.48 (+ hilt-navigation-compose)
+* **Networking:** Retrofit 2.9.0 with kotlinx-serialization (JSON 1.4.0)
+* **Images:** Coil 2.1.0
+* **Persistence:** Room 2.5.2 (compiled with KSP) + DataStore Preferences; Room TypeConverters and a DataStore value serialize with Gson 2.9.0
+* **Build:** AGP 7.4.0, Gradle 7.5, KSP + kapt
+* **SDK:** minSdk 24 · targetSdk 33 · compileSdk 33
+* **Testing:** JUnit 4, MockK, Turbine, Truth, kotlinx-coroutines-test
 
-Getting Started
-------------------------------------------
+## Architecture
 
-1. Clone the repository to your local machine:
-   `git clone https://github.com/Renekakpo/CookIt.git`
+The app follows an offline-first, layered structure under `com.example.cookit`:
 
+```
+app/          application entry
+data/         repositories, network + offline sources, Resource wrapper
+database/     Room database
+di/           Hilt modules (DataStore, Database, Network, Repository)
+models/       data models
+navigation/   Compose navigation graph
+network/      Retrofit API service (CookItApiService)
+ui/           Compose screens, common components, theme
+utils/        helpers
+```
+
+The recipe detail screen is offline-first. The repository returns a `Flow<Resource<Recipe>>`
+that shows the cached recipe first, then refreshes it from the network and keeps the
+"cooked" count on refresh. Only favorites are cached this way; search and home stay
+network-backed (see ADR 0002). The merge logic is covered by unit tests: cache vs network
+order, offline fallback, and keeping the cooked count.
+
+Key design decisions are recorded as ADRs in [docs/adr/](docs/adr/):
+
+* [0001 - Use Hilt for dependency injection](docs/adr/0001-use-hilt-for-dependency-injection.md)
+* [0002 - Offline-first scope: single source of truth for favorites only](docs/adr/0002-offline-first-scope.md)
+
+## Getting started
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Renekakpo/cookIt.git
+   ```
 2. Open the project in Android Studio.
-3. Register for a free API key from the [Spoonacular API](https://spoonacular.com/food-api) website.
-4. Replace the API key in the `gradle.properties` file:
-   `COOKIT_API_KEY=YOUR_API_KEY_HERE`
+3. Register for a free API key from the [Spoonacular API](https://spoonacular.com/food-api).
+4. Add your key to `local.properties` at the project root:
+   ```properties
+   COOKIT_API_KEY=YOUR_API_KEY_HERE
+   ```
+   It is exposed to the app through `BuildConfig.COOKIT_API_KEY`.
+5. Build and run on an emulator or device.
 
-5. Build and run the app on an Android emulator or device.
+### Useful commands
 
-Screenshots
-------------------------------------------
-<div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-    <img src="./screenshots/screenshot_splashscreen.png" alt="Splash Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_onboarding_start.png" alt="Onboarding Start" width="225" height="450" />
-    <img src="./screenshots/screenshot_onboarding_end.png" alt="Onboarding End" width="225" height="450" />
-    <img src="./screenshots/screenshot_signinscreen.png" alt="Sign In Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_signupscreen.png" alt="Sign Up Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_homescreen.png" alt="Home Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_recipedetails.png" alt="Recipe Details" width="225" height="450" />
-    <img src="./screenshots/screenshot_search_filter.png" alt="Search Filter" width="225" height="450" />
-    <img src="./screenshots/screenshot_instructions.png" alt="Instructions" width="225" height="450" />
-    <img src="./screenshots/screenshot_favoritescreen.png" alt="Favorite Screen" width="225" height="450" />
-    <img src="./screenshots/screenshot_settings.png" alt="Settings" width="225" height="450" />
-    <img src="./screenshots/screenshot_aboutapp.png" alt="About App" width="225" height="450" />
-</div>
+```bash
+./gradlew lint                # Android lint
+./gradlew testDebugUnitTest   # unit tests
+./gradlew assembleDebug       # build debug APK
+```
 
-Credits
-------------------------------------------
-The CookIt app was developed by René Kakpo as a personal project.
+## Continuous integration
 
-License
-------------------------------------------
-The CookIt app is released under
-the [MIT License](https://github.com/Renekakpo/cookIt/blob/main/LICENSE).
+CI runs on every push and pull request to `develop` and `main` via
+[GitHub Actions](.github/workflows/ci.yml) on JDK 17. It runs lint, unit tests and a debug assemble,
+and uploads the test and lint reports as build artifacts.
+
+## Screenshots
+
+| | |
+|---|---|
+| <img src="./screenshots/screenshot_homescreen.png" alt="Home screen" width="225" height="450" /> | <img src="./screenshots/screenshot_search_filter.png" alt="Search and filters" width="225" height="450" /> |
+| <img src="./screenshots/screenshot_recipedetails.png" alt="Recipe details" width="225" height="450" /> | <img src="./screenshots/screenshot_instructions.png" alt="Cooking instructions" width="225" height="450" /> |
+| <img src="./screenshots/screenshot_favoritescreen.png" alt="Favorites" width="225" height="450" /> |
+
+## Credits
+
+Developed by René Kakpo as a personal project.
+
+## License
+
+Released under the [MIT License](https://github.com/Renekakpo/cookIt/blob/main/LICENSE).

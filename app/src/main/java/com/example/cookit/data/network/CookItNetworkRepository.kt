@@ -4,11 +4,12 @@ import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.models.SearchApiRes
 import com.example.cookit.network.CookItApiService
-import com.example.cookit.utils.APP_API_KEY
+import com.example.cookit.BuildConfig
+import javax.inject.Inject
 
 interface CookItNetworkRepository {
     suspend fun searchRecipes(
-        apiKey: String = APP_API_KEY,
+        apiKey: String = BuildConfig.COOKIT_API_KEY,
         query: String,
         cuisine: String?,
         diet: String?,
@@ -17,20 +18,20 @@ interface CookItNetworkRepository {
     ): SearchApiRes
 
     suspend fun getRecipeInfo(
-        apiKey: String = APP_API_KEY,
+        apiKey: String = BuildConfig.COOKIT_API_KEY,
         id: Long,
         includeNutrition: Boolean = false,
     ): Recipe
 
     suspend fun getRandomRecipes(
-        apiKey: String = APP_API_KEY,
+        apiKey: String = BuildConfig.COOKIT_API_KEY,
         limitLicense: Boolean?,
         tags: List<String>?,
         number: Int
     ): RandomRecipesAPIRes
 }
 
-class DefaultCookItNetworkRepository(private val cookItApiService: CookItApiService) :
+class DefaultCookItNetworkRepository @Inject constructor(private val cookItApiService: CookItApiService) :
     CookItNetworkRepository {
     override suspend fun searchRecipes(
         apiKey: String,

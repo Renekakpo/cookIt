@@ -15,7 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -65,7 +64,7 @@ fun DietChip(
 ) {
     val colors = MaterialTheme.colors
     val backgroundColor = if (isSelected) colors.primary else colors.primary.copy(alpha = 0.3f)
-    val contentColor = if (isSelected) colors.onPrimary else Color.DarkGray.copy(alpha = 0.87f)
+    val contentColor = if (isSelected) colors.onPrimary else colors.onPrimary.copy(alpha = 0.87f)
 
     Surface(
         modifier = Modifier.clickable(onClick = onClick),

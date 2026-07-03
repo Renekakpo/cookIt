@@ -11,8 +11,8 @@ import com.example.cookit.data.offline.datastore.CookItDataStoreRepository
 import com.example.cookit.models.RandomRecipesAPIRes
 import com.example.cookit.models.Recipe
 import com.example.cookit.utils.getFoodSuggestion
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +24,8 @@ sealed interface HomeUiState {
     data class Success(val randomRecipes: RandomRecipesAPIRes) : HomeUiState
 }
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val cookItNetworkRepository: CookItNetworkRepository,
     private val dataStore: CookItDataStoreRepository
 ) : ViewModel() {
@@ -46,7 +47,7 @@ class HomeViewModel(
     fun getRandomRecipes(country: String?) {
         homeUiState = HomeUiState.Loading
 
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             homeUiState = try {
                 val foodSuggestion = getFoodSuggestion().let {
                     if (it.contains(" ")) it.substringAfterLast(" ") else it
@@ -72,6 +73,8 @@ class HomeViewModel(
     }
 
     private fun updateRandomRecipeValue(newValue: Recipe?) {
-        _randomRecipe.value = newValue
+        // Ne pas repousser un objet identique : StateFlow conflate déjà par equals,
+        // et Recipe est une data class stable (value equality) → pas de réémission inutile.
+        if (_randomRecipe.value != newValue) _randomRecipe.value = newValue
     }
 }

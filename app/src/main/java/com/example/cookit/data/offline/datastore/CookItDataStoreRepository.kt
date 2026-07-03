@@ -4,42 +4,16 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import com.example.cookit.ui.screens.search.FilterUiState
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.cookit.ui.theme.ThemeMode
+import com.example.cookit.utils.appJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import java.io.IOException
 
 class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
-    val onBoardingCompleted: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.d(TAG, "Error reading preferences", it)
-                emit(value = emptyPreferences())
-            } else {
-                throw it
-            }
-        }.map { prefs -> prefs[ON_BOARDING_COMPLETED] ?: true }
-
-    suspend fun saveOnBoardingCompletionState(isOnBoardingCompleted: Boolean) {
-        dataStore.edit { prefs -> prefs[ON_BOARDING_COMPLETED] = isOnBoardingCompleted }
-    }
-
-    val loginCompletionState: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.d(TAG, "Error reading preferences", it)
-                emit(value = emptyPreferences())
-            } else {
-                throw it
-            }
-        }.map { prefs -> prefs[ON_LOGIN_COMPLETED] ?: true }
-
-    suspend fun saveLoginCompletionState(isLoginCompleted: Boolean) {
-        dataStore.edit { prefs -> prefs[ON_LOGIN_COMPLETED] = isLoginCompleted }
-    }
-
     val cuisineTypeFilter: Flow<String> = dataStore.data
         .catch {
             if (it is IOException) {
@@ -85,9 +59,15 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             }
         }.map { prefs ->
             val listAsString = prefs[INTOLERANCES_FILTER] ?: ""
-            val listType = object : TypeToken<List<String>>() {}.type
-            val intolerances = Gson().fromJson<List<String>>(listAsString, listType)
-            intolerances ?: emptyList()
+            if (listAsString.isEmpty()) {
+                emptyList()
+            } else {
+                try {
+                    appJson.decodeFromString<List<String>>(listAsString)
+                } catch (e: Exception) {
+                    emptyList()
+                }
+            }
         }
 
     suspend fun saveAllFilter(filterUiState: FilterUiState) {
@@ -95,7 +75,7 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
             it[CUISINE_TYPE_FILTER] = filterUiState.cuisine
             it[MEAL_TYPE_FILTER] = filterUiState.meal
             it[DIET_FILTER] = filterUiState.diet
-            it[INTOLERANCES_FILTER] = filterUiState.intolerances.toString()
+            it[INTOLERANCES_FILTER] = appJson.encodeToString(filterUiState.intolerances.orEmpty())
         }
     }
 
@@ -127,14 +107,30 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
+    val themeMode: Flow<ThemeMode> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.d(TAG, "Error reading preferences", it)
+                emit(value = emptyPreferences())
+            } else {
+                throw it
+            }
+        }.map { prefs ->
+            val name = prefs[THEME_MODE]
+            runCatching { ThemeMode.valueOf(name ?: "") }.getOrDefault(ThemeMode.SYSTEM)
+        }
+
+    suspend fun saveThemeMode(mode: ThemeMode) {
+        dataStore.edit { it[THEME_MODE] = mode.name }
+    }
+
     private companion object {
         val TAG: String = CookItDataStoreRepository::class.java.simpleName
-        val ON_BOARDING_COMPLETED = booleanPreferencesKey(name = "onBoarding_completed")
-        val ON_LOGIN_COMPLETED = booleanPreferencesKey(name = "on_login_completed")
         val CUISINE_TYPE_FILTER = stringPreferencesKey(name = "cuisine_type_filter")
         val MEAL_TYPE_FILTER = stringPreferencesKey(name = "meal_type_filter")
         val DIET_FILTER = stringPreferencesKey(name = "diet_filter")
         val INTOLERANCES_FILTER = stringPreferencesKey(name = "intolerances_filter")
         val RECIPE_COOKED_COUNT = longPreferencesKey(name = "recipe_cooked_count")
+        val THEME_MODE = stringPreferencesKey(name = "theme_mode")
     }
 }

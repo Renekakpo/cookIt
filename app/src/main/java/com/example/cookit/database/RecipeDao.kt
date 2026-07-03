@@ -20,7 +20,10 @@ interface RecipeDao {
     suspend fun delete(id: Long)
 
     @Query("SELECT * FROM $RECIPE_TABLE_NAME WHERE id = :id")
-    fun getItem(id: Long): Recipe?
+    fun getItemStream(id: Long): Flow<Recipe?>
+
+    @Query("SELECT * FROM $RECIPE_TABLE_NAME WHERE id = :id")
+    suspend fun getItemOnce(id: Long): Recipe?
 
     @Query("SELECT * FROM $RECIPE_TABLE_NAME ORDER BY title ASC")
     fun getAllItems(): Flow<List<Recipe>>

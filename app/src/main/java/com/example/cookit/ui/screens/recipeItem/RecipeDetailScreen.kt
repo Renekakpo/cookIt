@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -36,7 +36,6 @@ import com.example.cookit.models.Step
 import com.example.cookit.navigation.NavDestination
 import com.example.cookit.ui.common.ErrorScreen
 import com.example.cookit.ui.common.LoadingScreen
-import com.example.cookit.utils.AppViewModelProvider
 import com.example.cookit.utils.INGREDIENT_IMAGE_BASE_URL
 import com.example.cookit.utils.showMessage
 import kotlinx.coroutines.launch
@@ -52,7 +51,7 @@ object RecipeDetailScreen : NavDestination {
 fun RecipeDetailsScreenMainContainer(
     id: Long,
     navigateUp: () -> Unit,
-    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RecipeInfoViewModel = hiltViewModel()
 ) {
     val stepsState =
         remember { mutableStateOf<List<Step>>(emptyList()) }
@@ -95,73 +94,66 @@ fun RecipeDetailsScreen(
     id: Long,
     navigateUp: () -> Unit,
     onStartCookingClicked: (List<Step>) -> Unit,
-    viewModel: RecipeInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: RecipeInfoViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
+    val state by viewModel.uiState.collectAsState()
 
-    val localRecipeData: Recipe? by viewModel.localRecipeData.collectAsState()
-    val addedToFavoriteRecipes: Boolean by viewModel.addedToFavorite.collectAsState()
-
-    when (val recipeUiState = viewModel.recipeDetailsUiState) {
+    when (val uiState = state) {
         is RecipeDetailsUiState.Loading -> {
             LoadingScreen()
         }
 
         is RecipeDetailsUiState.Success -> {
-            val recipe = recipeUiState.recipe
+            if (uiState.fromCache) {
+                OfflineIndicator()
+            }
 
             RecipeDetailsScreenContent(
-                onLikeClicked = { state ->
-                    viewModel.updateFavoriteDataState(
-                        isFavorite = state,
-                        recipe = recipe
-                    )
+                onLikeClicked = { liked ->
+                    viewModel.updateFavoriteDataState(isFavorite = liked)
                 },
                 onStartCookingClicked = onStartCookingClicked,
                 navigateUp = navigateUp,
-                recipe = recipe,
-                addedToFavoriteRecipes = addedToFavoriteRecipes
+                recipe = uiState.recipe,
+                addedToFavoriteRecipes = uiState.isFavorite
             )
-
-            if (addedToFavoriteRecipes) {
-                viewModel.updateFavoriteRecipeDetails(item = recipe)
-            }
         }
 
-        is RecipeDetailsUiState.Updated -> {
-            showMessage(
-                context = context,
-                message = "Recipe data updated"
+        is RecipeDetailsUiState.ErrorOfflineNoCache -> {
+            ErrorScreen(
+                errorMessage = stringResource(R.string.recipe_unavailable_offline_message),
+                onRetry = { viewModel.load(id) }
             )
         }
 
         is RecipeDetailsUiState.Error -> {
-            if (localRecipeData != null) {
-                RecipeDetailsScreenContent(
-                    onLikeClicked = { state ->
-                        viewModel.updateFavoriteDataState(
-                            isFavorite = state,
-                            recipe = localRecipeData!!
-                        )
-                    },
-                    onStartCookingClicked = onStartCookingClicked,
-                    navigateUp = navigateUp,
-                    recipe = localRecipeData!!,
-                    addedToFavoriteRecipes = true
-                )
-            } else {
-                ErrorScreen(
-                    errorMessage = stringResource(R.string.data_retrieving_error_message),
-                    onRetry = { viewModel.getNetworkRecipeDetails(recipeId = id) }
-                )
-            }
+            ErrorScreen(
+                errorMessage = stringResource(R.string.data_retrieving_error_message),
+                onRetry = { viewModel.load(id) }
+            )
         }
     }
 
     LaunchedEffect(id) {
-        viewModel.isFavoriteRecipe(recipeId = id)
-        viewModel.getNetworkRecipeDetails(recipeId = id)
-        viewModel.getLocalRecipeDetails(recipeId = id)
+        viewModel.load(id)
+    }
+}
+
+@Composable
+fun OfflineIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f))
+            .padding(vertical = 6.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.offline_indicator_text),
+            style = MaterialTheme.typography.caption,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
+        )
     }
 }
 
@@ -362,7 +354,7 @@ fun RecipeDetailsScreenContent(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(recipe.dishTypes ?: emptyList()) { item ->
+            items(recipe.dishTypes ?: emptyList(), key = { it }) { item ->
                 Box(
                     modifier = Modifier
                         .background(
@@ -413,7 +405,10 @@ fun RecipeDetailsScreenContent(
                 .padding(start = 15.dp, end = 15.dp),
             contentPadding = PaddingValues(vertical = 10.dp),
         ) {
-            items(recipe.extendedIngredients) { extendedIngredient ->
+            items(
+                recipe.extendedIngredients,
+                key = { ing -> ing.original?.takeIf { it.isNotBlank() } ?: ing.name ?: "" }
+            ) { extendedIngredient ->
                 IngredientItem(ingredient = extendedIngredient)
             }
         }
@@ -564,7 +559,7 @@ fun AnalyzedInstructionsSheet(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            itemsIndexed(steps) { _, step ->
+            itemsIndexed(steps, key = { _, step -> step.number }) { _, step ->
                 InstructionsItem(
                     modifier = Modifier.heightIn(min = 48.dp),
                     step = step

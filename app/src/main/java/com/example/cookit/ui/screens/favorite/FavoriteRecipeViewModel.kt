@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cookit.data.offline.RecipesRepository
 import com.example.cookit.models.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,8 @@ data class FavoriteRecipeUiState(val favorites: List<Recipe> = listOf())
 /**
  * View model to retrieve all recipes from Room database
  */
-class FavoriteRecipeViewModel(recipeRepository: RecipesRepository) : ViewModel() {
+@HiltViewModel
+class FavoriteRecipeViewModel @Inject constructor(recipeRepository: RecipesRepository) : ViewModel() {
 
     val favoriteRecipeUiState: StateFlow<FavoriteRecipeUiState> =
         recipeRepository.getAllItemsStream().map {
