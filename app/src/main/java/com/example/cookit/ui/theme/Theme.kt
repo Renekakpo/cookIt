@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -25,7 +26,7 @@ private val LightColorPalette = lightColors(
     primary = Teal400, // Main color used to display components across the app
     primaryVariant = Teal700, // Variant of the main color used for components such as topBar and statusBar
     background = Color.White, // Background color
-    secondary = Teal70O700, // Color used by components such as floating button, checkbox, highlight items...
+    secondary = Teal700Alpha60, // Color used by components such as floating button, checkbox, highlight items...
     surface = Teal400,
 
     onPrimary = Color.White,
@@ -43,16 +44,11 @@ fun CookItTheme(themeMode: ThemeMode = ThemeMode.SYSTEM, content: @Composable ()
     }
     val systemUiController = rememberSystemUiController()
 
-    val colors = if (darkTheme) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Transparent
-        )
-        DarkColorPalette
-    } else {
-        systemUiController.setSystemBarsColor(
-            color = Teal700
-        )
-        LightColorPalette
+    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
+    val systemBarColor = if (darkTheme) Color.Transparent else Teal700
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(color = systemBarColor)
     }
 
     MaterialTheme(
