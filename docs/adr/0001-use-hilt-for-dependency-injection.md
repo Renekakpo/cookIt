@@ -22,15 +22,15 @@ Adopt Hilt. Dependencies are provided through modules scoped by concern
 (Network, Database, DataStore, Repository). ViewModels are `@HiltViewModel`
 and obtained via `hiltViewModel()`.
 
-Hilt over Koin: compile-time graph validation catches missing bindings at
-build time rather than at runtime, which matters more here than Koin's
-lighter setup, given the goal of testable, verifiable wiring.
+I picked Hilt over Koin because it validates the dependency graph at build time,
+so a missing binding fails the build instead of crashing at runtime. Koin is
+lighter to set up, but I wanted the wiring checked by the compiler.
 
 ## Consequences
 
 - Static `appContext` removed; no ViewModel depends on a global Context.
 - ViewModels are now constructor-injected and unit-testable in isolation
   (enables the upcoming repository/ViewModel test work).
-- Added build cost: kapt annotation processing (~build time noted).
+- kapt annotation processing adds some build time.
 - The two repositories remain separate; unifying them behind a
   single-source-of-truth is tracked separately.
