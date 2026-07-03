@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import com.example.cookit.ui.screens.search.FilterUiState
+import com.example.cookit.ui.theme.ThemeMode
 import com.example.cookit.utils.appJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -106,6 +107,23 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
+    val themeMode: Flow<ThemeMode> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.d(TAG, "Error reading preferences", it)
+                emit(value = emptyPreferences())
+            } else {
+                throw it
+            }
+        }.map { prefs ->
+            val name = prefs[THEME_MODE]
+            runCatching { ThemeMode.valueOf(name ?: "") }.getOrDefault(ThemeMode.SYSTEM)
+        }
+
+    suspend fun saveThemeMode(mode: ThemeMode) {
+        dataStore.edit { it[THEME_MODE] = mode.name }
+    }
+
     private companion object {
         val TAG: String = CookItDataStoreRepository::class.java.simpleName
         val CUISINE_TYPE_FILTER = stringPreferencesKey(name = "cuisine_type_filter")
@@ -113,5 +131,6 @@ class CookItDataStoreRepository(private val dataStore: DataStore<Preferences>) {
         val DIET_FILTER = stringPreferencesKey(name = "diet_filter")
         val INTOLERANCES_FILTER = stringPreferencesKey(name = "intolerances_filter")
         val RECIPE_COOKED_COUNT = longPreferencesKey(name = "recipe_cooked_count")
+        val THEME_MODE = stringPreferencesKey(name = "theme_mode")
     }
 }

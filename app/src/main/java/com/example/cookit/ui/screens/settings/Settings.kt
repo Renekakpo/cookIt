@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ import coil.request.ImageRequest
 import com.example.cookit.BuildConfig
 import com.example.cookit.R
 import com.example.cookit.ui.theme.CookItTheme
+import com.example.cookit.ui.theme.ThemeMode
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -48,6 +51,7 @@ fun SettingsItemScreen(
     )
     val favoriteItemCount: Int by viewModel.getFavoriteRecipesCount().collectAsState(initial = 0)
     val cookedCount: Long by viewModel.getCookedRecipesCount().collectAsState(initial = 0)
+    val themeMode: ThemeMode by viewModel.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -65,6 +69,8 @@ fun SettingsItemScreen(
             modifier = modifier,
             favoriteItemCount = favoriteItemCount,
             cookedDataCount = cookedCount,
+            themeMode = themeMode,
+            onThemeSelected = viewModel::setThemeMode,
             onInfoClick = {
                 coroutineScope.launch { modalSheetState.show() }
             },
@@ -74,11 +80,14 @@ fun SettingsItemScreen(
 
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingsMenuMainContainer(
     modifier: Modifier = Modifier,
     favoriteItemCount: Int,
     cookedDataCount: Long,
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
+    onThemeSelected: (ThemeMode) -> Unit = {},
     onInfoClick: () -> Unit = {},
     onGitHubClick: () -> Unit = {}
 ) {
@@ -158,6 +167,69 @@ fun SettingsMenuMainContainer(
             }
         }
 
+        Spacer(modifier = Modifier.height(height = 20.dp))
+
+        Text(
+            text = stringResource(R.string.theme_section_title),
+            color = colors.onBackground.copy(alpha = 0.5f),
+            modifier = Modifier
+                .align(alignment = Alignment.Start)
+                .padding(bottom = 8.dp)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ThemeOptionChip(
+                label = stringResource(R.string.theme_light),
+                selected = themeMode == ThemeMode.LIGHT,
+                onClick = { onThemeSelected(ThemeMode.LIGHT) }
+            )
+            ThemeOptionChip(
+                label = stringResource(R.string.theme_dark),
+                selected = themeMode == ThemeMode.DARK,
+                onClick = { onThemeSelected(ThemeMode.DARK) }
+            )
+            ThemeOptionChip(
+                label = stringResource(R.string.theme_system),
+                selected = themeMode == ThemeMode.SYSTEM,
+                onClick = { onThemeSelected(ThemeMode.SYSTEM) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun ThemeOptionChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        shape = MaterialTheme.shapes.small,
+        leadingIcon = if (selected) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(size = 18.dp)
+                )
+            }
+        } else {
+            null
+        }
+    ) {
+        Text(
+            text = label,
+            color = colors.onPrimary,
+            style = typography.subtitle2,
+            modifier = Modifier.padding(horizontal = 5.dp, vertical = 8.dp)
+        )
     }
 }
 

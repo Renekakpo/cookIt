@@ -37,6 +37,10 @@
     <string name="version_name_text">Version %s</string>
     <string name="total_favorites_text">Total Favorites</string>
     <string name="total_cooked_text">Total Cooked</string>
+    <string name="theme_section_title">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
     <string name="recipe_picture_text">Recipe image</string>
     <string name="fat_text">Fat</string>
     <string name="proteins_text">Proteins</string>
