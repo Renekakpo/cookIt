@@ -13,8 +13,6 @@ import com.example.cookit.models.Recipe
 import com.example.cookit.utils.getFoodSuggestion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,7 +47,7 @@ class HomeViewModel @Inject constructor(
     fun getRandomRecipes(country: String?) {
         homeUiState = HomeUiState.Loading
 
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             homeUiState = try {
                 val foodSuggestion = getFoodSuggestion().let {
                     if (it.contains(" ")) it.substringAfterLast(" ") else it
@@ -75,6 +73,8 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updateRandomRecipeValue(newValue: Recipe?) {
-        _randomRecipe.value = newValue
+        // Ne pas repousser un objet identique : StateFlow conflate déjà par equals,
+        // et Recipe est une data class stable (value equality) → pas de réémission inutile.
+        if (_randomRecipe.value != newValue) _randomRecipe.value = newValue
     }
 }

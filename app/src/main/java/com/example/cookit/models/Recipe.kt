@@ -1,5 +1,6 @@
 package com.example.cookit.models
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -15,11 +16,12 @@ import kotlinx.serialization.Serializable
 /**
  * Entity data class represents a single row in the database.
  */
+@Immutable
 @Entity(tableName = RECIPE_TABLE_NAME, indices = [Index(value = ["id"], unique = true)])
 @Serializable
 data class Recipe(
     @PrimaryKey(autoGenerate = true)
-    var roomId: Long = 0,
+    val roomId: Long = 0,
     val id: Long = 0,
     val title: String? = null,
     val image: String? = null,
@@ -66,9 +68,10 @@ data class Recipe(
     val extendedIngredients: List<ExtendedIngredient> = emptyList(),
     @TypeConverters(NutritionConverters::class)
     val nutrition: Nutrition? = null,
-    var cooked: Boolean = false
+    val cooked: Boolean = false
 )
 
+@Immutable
 @Serializable
 data class ExtendedIngredient(
     val aisle: String? = null,
@@ -86,6 +89,7 @@ data class ExtendedIngredient(
     val unit: String? = null
 )
 
+@Immutable
 @Serializable
 data class Measure(
     val amount: Double? = 0.0,
@@ -93,6 +97,7 @@ data class Measure(
     val unitShort: String? = null
 )
 
+@Immutable
 @Serializable
 data class Nutrition(
     val nutrients: List<Nutrient>? = null,
@@ -103,6 +108,7 @@ data class Nutrition(
     val weightPerServing: WeightPerServing? = null,
 )
 
+@Immutable
 @Serializable
 data class Nutrient(
     val name: String? = null,
@@ -111,6 +117,7 @@ data class Nutrient(
     val percentOfDailyNeeds: Double? = null
 )
 
+@Immutable
 @Serializable
 data class NutProperty(
     val name: String? = null,
@@ -118,6 +125,7 @@ data class NutProperty(
     val unit: String? = null
 )
 
+@Immutable
 @Serializable
 data class NutFlavonoid(
     val name: String? = null,
@@ -125,6 +133,7 @@ data class NutFlavonoid(
     val unit: String? = null
 )
 
+@Immutable
 @Serializable
 data class NutIngredient(
     val id: Long = 0,
@@ -133,6 +142,7 @@ data class NutIngredient(
     val unit: String? = null
 )
 
+@Immutable
 @Serializable
 data class CaloricBreakdown(
     val percentProtein: Double? = null,
@@ -140,6 +150,7 @@ data class CaloricBreakdown(
     val percentCarbs: Double? = null
 )
 
+@Immutable
 @Serializable
 data class WeightPerServing(
     val amount: Double? = null,
